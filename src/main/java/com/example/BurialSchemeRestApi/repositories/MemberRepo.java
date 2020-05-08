@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.BurialSchemeRestApi.models.Member;
 
-public interface PersonRepo extends JpaRepository<Member, Long> {
+public interface MemberRepo extends JpaRepository<Member, Long> {
 	
 	List<Member> findByName(String name);
 	List<Member> findByNameContains(String name);
