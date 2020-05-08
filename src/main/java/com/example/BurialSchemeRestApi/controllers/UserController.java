@@ -19,11 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.BurialSchemeRestApi.dto.UserDTO;
 import com.example.BurialSchemeRestApi.jwt.JwtRequest;
@@ -120,6 +116,45 @@ public class UserController {
 		m.put("user", userRepo.findAll());
 
 		return ResponseEntity.status(HttpStatus.OK).body(m);
+	}
+
+	@PutMapping("/updateUser/{id}")
+	public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO user){
+
+		Map<String, Object> m = new HashMap<String, Object> ();
+
+		try {
+			User theUser =userRepo.findById(id).orElseThrow();
+			try {
+				Role role = roleRepo.findById(user.getRole()).orElseThrow();
+
+				if (user.getEmail() != null) theUser.setEmail(user.getEmail());
+				if (user.getNumber()!= null) theUser.setNumber(user.getNumber());
+				if (user.getName() != null) theUser.setName(user.getName());
+				if (user.getSurname() != null) theUser.setSurname(user.getSurname());
+				if (user.getUsername() != null) theUser.setUsername(user.getUsername());
+				if (user.getPassword() != null) theUser.setPassword(user.getPassword());
+				if (user.getSurname() != null) theUser.setSurname(user.getSurname());
+				if (user.getRole() != 0) theUser.setRole(role);
+
+				m.put("message", "success");
+				m.put("person", userRepo.save(theUser));
+				return ResponseEntity.status(HttpStatus.OK).body(m);
+
+			}catch (Exception e) {
+				logger.error("No such role");
+				return responseUtil("No such Role");
+			}
+
+
+		}catch(Exception e) {
+
+			logger.error("Trying to update a user that does not exist");
+			m.put("message", "No such User");
+			return ResponseEntity.status(HttpStatus.OK).body(m);
+
+		}
+
 	}
 
 	@PostMapping("/changeUserStatus")

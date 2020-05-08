@@ -11,7 +11,7 @@ public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long ID;
-	private String roleName;
+	private String name;
 	
 	public long getID() {
 		return ID;
@@ -19,15 +19,15 @@ public class Role {
 	public void setID(long iD) {
 		ID = iD;
 	}
-	public String getRoleName() {
-		return roleName;
+	public String getName() {
+		return name;
 	}
-	public void setRoleName(String roleName) {
-		this.roleName = roleName;
+	public void setName(String name) {
+		this.name = name;
 	}
 	@Override
 	public String toString() {
-		return "Role [ID=" + ID + ", roleName=" + roleName + "]";
+		return "Role [ID=" + ID + ", roleName=" + name + "]";
 	}
 	
 	
