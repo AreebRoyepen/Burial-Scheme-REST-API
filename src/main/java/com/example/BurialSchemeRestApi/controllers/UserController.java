@@ -68,7 +68,7 @@ public class UserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("expiration", exp);
 		map.put("token", new JwtResponse(token).getToken());
-		map.put("user", user);
+		map.put("data", user);
 		return ResponseEntity.ok(map);
 
 	}
@@ -113,7 +113,7 @@ public class UserController {
 
 		Map<String, Object> m = new HashMap<String, Object>();
 		m.put("message", "success");
-		m.put("user", userRepo.findAll());
+		m.put("data", userRepo.findAll());
 
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
@@ -138,7 +138,7 @@ public class UserController {
 				if (user.getRole() != 0) theUser.setRole(role);
 
 				m.put("message", "success");
-				m.put("person", userRepo.save(theUser));
+				m.put("data", userRepo.save(theUser));
 				return ResponseEntity.status(HttpStatus.OK).body(m);
 
 			}catch (Exception e) {

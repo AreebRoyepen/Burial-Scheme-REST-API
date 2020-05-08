@@ -35,7 +35,7 @@ public class MemberController {
 		
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("member", repo.findAll());
+		m.put("data", repo.findAll());
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 	
@@ -65,7 +65,7 @@ public class MemberController {
 		}
 		
 		map.put("message", "success");
-		map.put("member", repo.save(m));
+		map.put("data", repo.save(m));
 		return ResponseEntity.status(HttpStatus.OK).body(map);
 	
 	}
@@ -75,7 +75,7 @@ public class MemberController {
 	public ResponseEntity<?> getMemberByName(@PathVariable String name){
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("member", repo.findByName(name));
+		m.put("data", repo.findByName(name));
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 	
@@ -84,7 +84,7 @@ public class MemberController {
 	public ResponseEntity<?> memberLikeName(@PathVariable String p){
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("person",repo.findByNameContains(p));
+		m.put("data",repo.findByNameContains(p));
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 	
@@ -92,7 +92,7 @@ public class MemberController {
 	public ResponseEntity<?> getPersonByID(@PathVariable Long id) {
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("member",repo.findById(id).orElseThrow());
+		m.put("data",repo.findById(id).orElseThrow());
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 
@@ -126,7 +126,7 @@ public class MemberController {
 		    if (p.getSurname() != null) member.setSurname(p.getSurname());
 	        
 		    m.put("message", "success");
-		    m.put("member", repo.save(member));
+		    m.put("data", repo.save(member));
 		    return ResponseEntity.status(HttpStatus.OK).body(m);
 			
 		}catch(Exception e) {

@@ -24,7 +24,7 @@ public class RoleController {
 		
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("role",roleRepo.findAll());
+		m.put("data",roleRepo.findAll());
 		
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
