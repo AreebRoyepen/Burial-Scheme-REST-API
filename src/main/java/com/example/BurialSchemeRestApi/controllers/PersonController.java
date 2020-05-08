@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.example.BurialSchemeRestApi.models.Person;
+import com.example.BurialSchemeRestApi.models.Member;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,12 +40,12 @@ public class PersonController {
 	}
 	
 	@PostMapping("/addPerson")
-	public ResponseEntity<?> addPerson(@RequestBody Person p){
+	public ResponseEntity<?> addPerson(@RequestBody Member p){
 		
-		List <Person> person = repo.findAll();
+		List <Member> members = repo.findAll();
 		Map<String, Object> m = new HashMap<String, Object> ();
 		
-		for(Person x : person) {
+		for(Member x : members) {
 			
 			if(	x.getName().equals(p.getName()) && x.getSurname().equals(p.getSurname())) {
 				
@@ -113,20 +113,20 @@ public class PersonController {
 	}
 	
 	@PutMapping("/updatePerson/{id}")
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Person p) {
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Member p) {
 		
 		Map<String, Object> m = new HashMap<String, Object> ();
 		
 		try {
-			Person person =repo.findById(id).orElseThrow();
+			Member member =repo.findById(id).orElseThrow();
 
-			if (p.getEmail() != null) person.setEmail(p.getEmail());
-		  	if (p.getNumber()!= null) person.setNumber(p.getNumber());
-		    if (p.getName() != null) person.setName(p.getName());
-		    if (p.getSurname() != null) person.setSurname(p.getSurname());
+			if (p.getEmail() != null) member.setEmail(p.getEmail());
+		  	if (p.getNumber()!= null) member.setNumber(p.getNumber());
+		    if (p.getName() != null) member.setName(p.getName());
+		    if (p.getSurname() != null) member.setSurname(p.getSurname());
 	        
 		    m.put("message", "success");
-		    m.put("person", repo.save(person));
+		    m.put("person", repo.save(member));
 		    return ResponseEntity.status(HttpStatus.OK).body(m);
 			
 		}catch(Exception e) {

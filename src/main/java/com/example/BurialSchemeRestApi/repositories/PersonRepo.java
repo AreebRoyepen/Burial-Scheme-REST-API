@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.BurialSchemeRestApi.models.Person;
+import com.example.BurialSchemeRestApi.models.Member;
 
-public interface PersonRepo extends JpaRepository<Person, Long> {
+public interface PersonRepo extends JpaRepository<Member, Long> {
 	
-	List<Person> findByName(String name);
-	List<Person> findByNameContains(String name);
+	List<Member> findByName(String name);
+	List<Member> findByNameContains(String name);
 
 
 }
