@@ -1,7 +1,7 @@
 use BURIALSCHEME;
 
-insert into role (role_name) values ("admin");
-insert into role (role_name) values ("coordinator");
-insert into role (role_name) values ("clerk");
+insert into role (name) values ("admin");
+insert into role (name) values ("coordinator");
+insert into role (name) values ("clerk");
 
 

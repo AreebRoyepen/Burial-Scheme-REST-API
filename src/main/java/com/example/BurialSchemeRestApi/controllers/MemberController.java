@@ -19,85 +19,85 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.BurialSchemeRestApi.repositories.PersonRepo;
+import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 
 @RestController
 @CrossOrigin
-public class PersonController {
+public class MemberController {
 	
 	Logger logger = LoggerFactory.getLogger(UserController.class);
 	
 	@Autowired
-	PersonRepo repo;
+    MemberRepo repo;
 	
-	@GetMapping("/person")
-	public ResponseEntity<?> allPerson() {
+	@GetMapping("/members")
+	public ResponseEntity<?> allMembers() {
 		
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("person", repo.findAll());
+		m.put("member", repo.findAll());
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 	
-	@PostMapping("/addPerson")
-	public ResponseEntity<?> addPerson(@RequestBody Member p){
+	@PostMapping("/addMember")
+	public ResponseEntity<?> addMember(@RequestBody Member m){
 		
 		List <Member> members = repo.findAll();
-		Map<String, Object> m = new HashMap<String, Object> ();
+		Map<String, Object> map = new HashMap<String, Object> ();
 		
 		for(Member x : members) {
 			
-			if(	x.getName().equals(p.getName()) && x.getSurname().equals(p.getSurname())) {
+			if(	x.getName().equals(m.getName()) && x.getSurname().equals(m.getSurname())) {
 				
-				if( x.getNumber().equals(p.getNumber()) && x.getEmail().equals(p.getEmail())){
+				if( x.getNumber().equals(m.getNumber()) && x.getEmail().equals(m.getEmail())){
 				
-					m.put("message", "Person already exists");
-					return ResponseEntity.status(HttpStatus.OK).body(m);
+					map.put("message", "Member already exists");
+					return ResponseEntity.status(HttpStatus.OK).body(map);
 				
-				}else if(x.getNumber().equals(p.getNumber()) || x.getEmail().equals(p.getEmail())) {
+				}else if(x.getNumber().equals(m.getNumber()) || x.getEmail().equals(m.getEmail())) {
 				
-					m.put("message", "Similar Person already exists");
-					return ResponseEntity.status(HttpStatus.OK).body(m);
+					map.put("message", "Similar Member already exists");
+					return ResponseEntity.status(HttpStatus.OK).body(map);
 				
 				}			
 			}
 			
 		}
 		
-		m.put("message", "success");
-		m.put("person", repo.save(p));
-		return ResponseEntity.status(HttpStatus.OK).body(m);
+		map.put("message", "success");
+		map.put("member", repo.save(m));
+		return ResponseEntity.status(HttpStatus.OK).body(map);
 	
 	}
 
 	
-	@GetMapping("/personByName/{name}")
-	public ResponseEntity<?> getPersonByName(@PathVariable String name){
+	@GetMapping("/memberByName/{name}")
+	public ResponseEntity<?> getMemberByName(@PathVariable String name){
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("person", repo.findByName(name));
+		m.put("member", repo.findByName(name));
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 	
 	
-	@GetMapping("/personLikeName/{p}")
-	public ResponseEntity<?> personLikeName(@PathVariable String p){
+	@GetMapping("/memberLikeName/{p}")
+	public ResponseEntity<?> memberLikeName(@PathVariable String p){
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
 		m.put("person",repo.findByNameContains(p));
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 	
-	@GetMapping("/personByID/{id}")
+	@GetMapping("/memberByID/{id}")
 	public ResponseEntity<?> getPersonByID(@PathVariable Long id) {
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("person",repo.findById(id).orElseThrow());
+		m.put("member",repo.findById(id).orElseThrow());
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 
-	@DeleteMapping("/deletePerson/{id}")
-	public ResponseEntity<?> deletePerson(@PathVariable Long id) {
+	@DeleteMapping("/deleteMember/{id}")
+	public ResponseEntity<?> deleteMember(@PathVariable Long id) {
 		try {
 			repo.deleteById(id);
 			Map<String, String> m = new HashMap<String, String> ();
@@ -106,13 +106,13 @@ public class PersonController {
 			
 		}catch(Exception e) {
 			Map<String, String> m = new HashMap<String, String> ();
-			m.put("message", "No such Person");
-			logger.error("Trying to delete a person that does not exist");
+			m.put("message", "No such Member");
+			logger.error("Trying to delete a member that does not exist");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
 		}
 	}
 	
-	@PutMapping("/updatePerson/{id}")
+	@PutMapping("/updateMember/{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Member p) {
 		
 		Map<String, Object> m = new HashMap<String, Object> ();
@@ -126,13 +126,13 @@ public class PersonController {
 		    if (p.getSurname() != null) member.setSurname(p.getSurname());
 	        
 		    m.put("message", "success");
-		    m.put("person", repo.save(member));
+		    m.put("member", repo.save(member));
 		    return ResponseEntity.status(HttpStatus.OK).body(m);
 			
 		}catch(Exception e) {
 			
-			logger.error("Trying to update a person that does not exist");
-			m.put("message", "No such Person");
+			logger.error("Trying to update a member that does not exist");
+			m.put("message", "No such member");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
 
 		}
