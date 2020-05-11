@@ -2,14 +2,15 @@ package com.example.BurialSchemeRestApi.models;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
-public class Expenses {
+public class Expense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long ID;
-    private BigDecimal amount;
+    private BigDecimal amount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
     private String reason;
 
     @ManyToOne
@@ -29,7 +30,7 @@ public class Expenses {
     }
 
     public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+        this.amount = amount.setScale(2, RoundingMode.HALF_EVEN);
     }
 
     public String getReason() {

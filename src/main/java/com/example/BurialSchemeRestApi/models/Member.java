@@ -1,11 +1,9 @@
 package com.example.BurialSchemeRestApi.models;
 
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 public class Member {
@@ -18,9 +16,11 @@ public class Member {
 	private String number;
 	private String email;
 	private Date DOB;
-	private Date DOE;
-	private boolean hasDependants;
-	private boolean claimed;
+	private Date DOE = new Date(System.currentTimeMillis());
+	private boolean claimed = false;
+
+	@OneToMany(mappedBy="member")
+	private Set<Dependant> dependants;
 	
 	public long getID() {
 		return ID;
@@ -69,20 +69,20 @@ public class Member {
 		this.DOE = DOE;
 	}
 
-	public boolean hasDependants() {
-		return hasDependants;
-	}
-
-	public void setHasDependants(boolean hasDependants) {
-		this.hasDependants = hasDependants;
-	}
-
 	public boolean hasClaimed() {
 		return claimed;
 	}
 
 	public void setClaimed(boolean claimed) {
 		this.claimed = claimed;
+	}
+
+	public Set<Dependant> getDependants() {
+		return dependants;
+	}
+
+	public void setDependants(Set<Dependant> dependants) {
+		this.dependants = dependants;
 	}
 
 	@Override

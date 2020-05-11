@@ -50,6 +50,9 @@ public class UserController {
 	@Autowired
 	private RoleRepo roleRepo;
 
+	@Autowired
+	private UtilController util;
+
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
@@ -79,12 +82,12 @@ public class UserController {
 		if(user.getName() ==null || user.getSurname()==null || user.getUsername()==null || 
 				user.getPassword() ==null || user.getRole() <= 0) {
 			if(user.getEmail() == null && user.getNumber() == null)
-			return responseUtil("Invalid request body");
+			return util.responseUtil("Invalid request body");
 		}
 		
 		User newUser = save(user);
 		if(newUser == null) {
-			return responseUtil("No such Role");
+			return util.responseUtil("No such Role");
 		}
 		return ResponseEntity.ok(newUser);
 
@@ -143,7 +146,7 @@ public class UserController {
 
 			}catch (Exception e) {
 				logger.error("No such role");
-				return responseUtil("No such Role");
+				return util.responseUtil("No such Role");
 			}
 
 
@@ -176,15 +179,15 @@ public class UserController {
 				user.setActive(active);
 				userRepo.save(user);
 
-				return responseUtil("success");
+				return util.responseUtil("success");
 			}catch (Exception e) {
 				logger.error("No such user");
-				return responseUtil("No such user");
+				return util.responseUtil("No such user");
 			}
 
 		} catch (Exception e) {
 			logger.error("Bad request body when changing user status");
-			return responseUtil("Bad Request Body");
+			return util.responseUtil("Bad Request Body");
 		}
 
 	}
@@ -222,11 +225,7 @@ public class UserController {
 
 	}
 
-	private ResponseEntity<?> responseUtil(String message) {
-		Map<String, String> m = new HashMap<String, String>();
-		m.put("message", message);
-		return ResponseEntity.status(HttpStatus.OK).body(m);
-	}
+
 
 	private void authenticate(String username, String password) throws Exception {
 		try {

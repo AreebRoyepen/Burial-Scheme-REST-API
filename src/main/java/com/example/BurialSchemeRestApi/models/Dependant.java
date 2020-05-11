@@ -12,8 +12,8 @@ public class Dependant {
     private String name;
     private String surname;
     private Date DOB;
-    private Date DOE;
-    private boolean claimed;
+    private Date DOE = new Date(System.currentTimeMillis());
+    private boolean claimed = false;
 
     @ManyToOne
     @JoinColumn(name = "memberID" , nullable = false)
@@ -63,7 +63,7 @@ public class Dependant {
         this.DOE = DOE;
     }
 
-    public boolean isClaimed() {
+    public boolean hasClaimed() {
         return claimed;
     }
 

@@ -11,5 +11,4 @@ public interface MemberRepo extends JpaRepository<Member, Long> {
 	List<Member> findByName(String name);
 	List<Member> findByNameContains(String name);
 
-
 }

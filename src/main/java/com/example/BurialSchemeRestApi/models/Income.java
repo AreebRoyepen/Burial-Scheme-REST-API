@@ -2,6 +2,7 @@ package com.example.BurialSchemeRestApi.models;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 @Entity
@@ -10,7 +11,7 @@ public class Income {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long ID;
-    private BigDecimal amount;
+    private BigDecimal amount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
     private Date date;
 
     @ManyToOne
@@ -30,7 +31,7 @@ public class Income {
     }
 
     public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+        this.amount = amount.setScale(2, RoundingMode.HALF_EVEN);
     }
 
     public Date getDate() {
