@@ -1,10 +1,10 @@
 package com.example.BurialSchemeRestApi.controllers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.example.BurialSchemeRestApi.models.Dependant;
 import com.example.BurialSchemeRestApi.models.Member;
+import com.example.BurialSchemeRestApi.repositories.DependantRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,24 +25,50 @@ import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 @CrossOrigin
 public class MemberController {
 	
-	Logger logger = LoggerFactory.getLogger(UserController.class);
+	Logger logger = LoggerFactory.getLogger(MemberController.class);
 	
 	@Autowired
-    MemberRepo repo;
+    MemberRepo memberRepo;
+	@Autowired
+	DependantRepo dependantRepo;
+	@Autowired
+	private UtilController util;
 	
 	@GetMapping("/members")
 	public ResponseEntity<?> allMembers() {
 		
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("data", repo.findAll());
+		m.put("data", memberRepo.findAll());
 		return ResponseEntity.status(HttpStatus.OK).body(m);
+	}
+
+	@GetMapping("/dependants/{id}")
+	public ResponseEntity<?> membersDependants(@PathVariable long id) {
+
+		try{
+
+			Member member = memberRepo.findById(id).orElseThrow();
+
+			Set set = new HashSet();
+			set.addAll(member.getDependants());
+
+			Map<String, Object> m = new HashMap<> ();
+			m.put("message", "success");
+			m.put("data", set);
+			return ResponseEntity.status(HttpStatus.OK).body(m);
+
+		}catch (Exception ex){
+			logger.error("No such Member");
+			return util.responseUtil("No such Member");
+		}
+
 	}
 	
 	@PostMapping("/addMember")
 	public ResponseEntity<?> addMember(@RequestBody Member m){
 		
-		List <Member> members = repo.findAll();
+		List <Member> members = memberRepo.findAll();
 		Map<String, Object> map = new HashMap<String, Object> ();
 		
 		for(Member x : members) {
@@ -65,7 +91,7 @@ public class MemberController {
 		}
 		
 		map.put("message", "success");
-		map.put("data", repo.save(m));
+		map.put("data", memberRepo.save(m));
 		return ResponseEntity.status(HttpStatus.OK).body(map);
 	
 	}
@@ -75,7 +101,7 @@ public class MemberController {
 	public ResponseEntity<?> getMemberByName(@PathVariable String name){
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("data", repo.findByName(name));
+		m.put("data", memberRepo.findByName(name));
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 	
@@ -84,28 +110,28 @@ public class MemberController {
 	public ResponseEntity<?> memberLikeName(@PathVariable String p){
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("data",repo.findByNameContains(p));
+		m.put("data",memberRepo.findByNameContains(p));
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 	
 	@GetMapping("/memberByID/{id}")
-	public ResponseEntity<?> getPersonByID(@PathVariable Long id) {
+	public ResponseEntity<?> getMemberByID(@PathVariable Long id) {
 		Map<String, Object> m = new HashMap<String, Object> ();
 		m.put("message", "success");
-		m.put("data",repo.findById(id).orElseThrow());
+		m.put("data",memberRepo.findById(id).orElseThrow());
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 
 	@DeleteMapping("/deleteMember/{id}")
 	public ResponseEntity<?> deleteMember(@PathVariable Long id) {
 		try {
-			repo.deleteById(id);
+			memberRepo.deleteById(id);
 			Map<String, String> m = new HashMap<String, String> ();
 			m.put("message", "success");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
 			
 		}catch(Exception e) {
-			Map<String, String> m = new HashMap<String, String> ();
+			Map<String, String> m = new HashMap<> ();
 			m.put("message", "No such Member");
 			logger.error("Trying to delete a member that does not exist");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
@@ -115,18 +141,20 @@ public class MemberController {
 	@PutMapping("/updateMember/{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Member p) {
 		
-		Map<String, Object> m = new HashMap<String, Object> ();
+		Map<String, Object> m = new HashMap<> ();
 		
 		try {
-			Member member =repo.findById(id).orElseThrow();
+			Member member =memberRepo.findById(id).orElseThrow();
 
 			if (p.getEmail() != null) member.setEmail(p.getEmail());
 		  	if (p.getNumber()!= null) member.setNumber(p.getNumber());
 		    if (p.getName() != null) member.setName(p.getName());
 		    if (p.getSurname() != null) member.setSurname(p.getSurname());
+			if(p.getDOB() != null) member.setDOB(p.getDOB());
+			if(p.getDOE() != null) member.setDOE(p.getDOE());
 	        
 		    m.put("message", "success");
-		    m.put("data", repo.save(member));
+		    m.put("data", memberRepo.save(member));
 		    return ResponseEntity.status(HttpStatus.OK).body(m);
 			
 		}catch(Exception e) {
@@ -137,4 +165,5 @@ public class MemberController {
 
 		}
 	}
+
 }
