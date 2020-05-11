@@ -1,13 +1,7 @@
 package com.example.BurialSchemeRestApi.controllers;
 
-import com.example.BurialSchemeRestApi.models.Claim;
-import com.example.BurialSchemeRestApi.models.Dependant;
-import com.example.BurialSchemeRestApi.models.Member;
-import com.example.BurialSchemeRestApi.models.TransactionType;
-import com.example.BurialSchemeRestApi.repositories.ClaimRepo;
-import com.example.BurialSchemeRestApi.repositories.DependantRepo;
-import com.example.BurialSchemeRestApi.repositories.MemberRepo;
-import com.example.BurialSchemeRestApi.repositories.TransactionTypeRepo;
+import com.example.BurialSchemeRestApi.models.*;
+import com.example.BurialSchemeRestApi.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +27,8 @@ public class ClaimController {
     DependantRepo dependantRepo;
     @Autowired
     ClaimRepo claimRepo;
+    @Autowired
+    PremiumRepo premiumRepo;
     @Autowired
     TransactionTypeRepo transactionTypeRepo;
     @Autowired
@@ -85,12 +81,34 @@ public class ClaimController {
 
                     TransactionType t = transactionTypeRepo.findById(type).orElseThrow();
                     Claim claim = new Claim();
+
+                    BigDecimal total = util.getTotalPremiums(member).setScale(2, RoundingMode.HALF_EVEN);
+
+                    if(amount.compareTo(total) > 0){
+                        return util.responseUtil("Cannot claim more than total premiums paid");
+                    }
+
+                    if(member.getDependants().isEmpty() || util.allDependantsClaimed(member)){
+                        claim.setAmount(total);
+                        claim.setDate(new Date(System.currentTimeMillis()));
+                        claim.setMember(member);
+                        claim.setTransactionType(t);
+                        m.put("info", "This is the last claim possible so all funds are paid out");
+                        m.put("message", "success");
+                        member.setClaimed(true);
+                        memberRepo.save(member);
+                        m.put("data", claimRepo.save(claim));
+                        return ResponseEntity.status(HttpStatus.OK).body(m);
+                    }
+
+                    //TODO
                     claim.setAmount(amount);
                     claim.setDate(new Date(System.currentTimeMillis()));
                     claim.setMember(member);
                     claim.setTransactionType(t);
                     m.put("message", "success");
                     member.setClaimed(true);
+                    memberRepo.save(member);
                     m.put("data", claimRepo.save(claim));
                     return ResponseEntity.status(HttpStatus.OK).body(m);
 
@@ -159,13 +177,36 @@ public class ClaimController {
 
                         TransactionType t = transactionTypeRepo.findById(type).orElseThrow();
                         Claim claim = new Claim();
+
+
+                        BigDecimal total = util.getTotalPremiums(member).setScale(2, RoundingMode.HALF_EVEN);
+
+                        if(amount.compareTo(total) > 0){
+                            return util.responseUtil("Cannot claim more than total premiums paid");
+                        }
+
+                        if((member.getDependants().size() == 1 || util.lastDependantToClaim(member)) && member.hasClaimed()){
+                            claim.setAmount(total);
+                            claim.setDate(new Date(System.currentTimeMillis()));
+                            claim.setMember(member);
+                            claim.setTransactionType(t);
+                            m.put("info", "This is the last claim possible so all funds are paid out");
+                            m.put("message", "success");
+                            dep.setClaimed(true);
+                            dependantRepo.save(dep);
+                            m.put("data", claimRepo.save(claim));
+                            return ResponseEntity.status(HttpStatus.OK).body(m);
+                        }
+
+
                         claim.setAmount(amount);
                         claim.setDate(new Date(System.currentTimeMillis()));
                         claim.setMember(member);
                         claim.setTransactionType(t);
                         m.put("message", "success");
                         dep.setClaimed(true);
-                        m.put("data", dependantRepo.save(dep));
+                        dependantRepo.save(dep);
+                        m.put("data", claimRepo.save(claim));
                         return ResponseEntity.status(HttpStatus.OK).body(m);
 
                     }catch (Exception ex){
@@ -194,4 +235,5 @@ public class ClaimController {
 
         }
     }
+
 }
