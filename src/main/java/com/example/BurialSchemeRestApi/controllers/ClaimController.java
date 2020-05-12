@@ -2,6 +2,7 @@ package com.example.BurialSchemeRestApi.controllers;
 
 import com.example.BurialSchemeRestApi.models.*;
 import com.example.BurialSchemeRestApi.repositories.*;
+import com.example.BurialSchemeRestApi.util.UtilClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class ClaimController {
     @Autowired
     TransactionTypeRepo transactionTypeRepo;
     @Autowired
-    private UtilController util;
+    private UtilClass util;
 
     @GetMapping("/claims")
     public ResponseEntity<?> allClaims() {

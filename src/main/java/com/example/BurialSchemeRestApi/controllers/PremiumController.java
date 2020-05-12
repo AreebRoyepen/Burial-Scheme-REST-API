@@ -3,6 +3,7 @@ package com.example.BurialSchemeRestApi.controllers;
 import com.example.BurialSchemeRestApi.models.Premium;
 import com.example.BurialSchemeRestApi.models.TransactionType;
 import com.example.BurialSchemeRestApi.repositories.*;
+import com.example.BurialSchemeRestApi.util.UtilClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class PremiumController {
     @Autowired
     TransactionTypeRepo transactionTypeRepo;
     @Autowired
-    private UtilController util;
+    private UtilClass util;
 
     @GetMapping("/premiums")
     public ResponseEntity<?> allPremiums() {
