@@ -1,16 +1,14 @@
-package com.example.BurialSchemeRestApi.controllers;
+package com.example.BurialSchemeRestApi.util;
 
 import com.example.BurialSchemeRestApi.models.Dependant;
 import com.example.BurialSchemeRestApi.models.Member;
 import com.example.BurialSchemeRestApi.models.Premium;
-import com.example.BurialSchemeRestApi.models.TransactionType;
 import com.example.BurialSchemeRestApi.repositories.PremiumRepo;
-import com.example.BurialSchemeRestApi.repositories.TransactionTypeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,9 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@RestController
-@CrossOrigin
-public class UtilController {
+@Component
+public class UtilClass {
 
     @Autowired
     PremiumRepo premiumRepo;

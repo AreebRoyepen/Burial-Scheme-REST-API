@@ -1,8 +1,8 @@
 package com.example.BurialSchemeRestApi.controllers;
 
 import com.example.BurialSchemeRestApi.models.Dependant;
-import com.example.BurialSchemeRestApi.models.Member;
 import com.example.BurialSchemeRestApi.repositories.DependantRepo;
+import com.example.BurialSchemeRestApi.util.UtilClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class DependantController {
 	@Autowired
 	DependantRepo repo;
 	@Autowired
-	private UtilController util;
+	private UtilClass util;
 	
 	@GetMapping("/dependants")
 	public ResponseEntity<?> allMembers() {

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.example.BurialSchemeRestApi.util.UtilClass;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class UserController {
 	private RoleRepo roleRepo;
 
 	@Autowired
-	private UtilController util;
+	private UtilClass util;
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody JwtRequest authenticationRequest) throws Exception {
