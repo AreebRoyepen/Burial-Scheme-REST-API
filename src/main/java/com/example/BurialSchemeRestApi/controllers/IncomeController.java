@@ -19,6 +19,7 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
@@ -58,18 +59,20 @@ public class IncomeController {
             Income income = new Income();
 
             income.setAmount(amount);
-            income.setDate(new Date(System.currentTimeMillis()));
             income.setTransactionType(t);
 
             Map<String, Object> m = new HashMap<String, Object> ();
             m.put("message", "success");
             m.put("data", incomeRepo.save(income));
             return ResponseEntity.status(HttpStatus.OK).body(m);
-        }catch (Exception ex){
+        }catch (NoSuchElementException ex){
 
             logger.error("No such transaction type");
             return util.responseUtil("No such transaction type");
 
+        }catch(Exception e){
+            e.printStackTrace();
+            return util.responseUtil(e.getMessage());
         }
 
     }

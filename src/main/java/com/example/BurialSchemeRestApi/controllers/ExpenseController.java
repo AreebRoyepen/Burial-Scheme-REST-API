@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
@@ -81,11 +82,14 @@ public class ExpenseController {
             m.put("message", "success");
             m.put("data", expenseRepo.save(expense));
             return ResponseEntity.status(HttpStatus.OK).body(m);
-        }catch (Exception ex){
+        }catch (NoSuchElementException ex){
 
             logger.error("No such transaction type");
             return util.responseUtil("No such transaction type");
 
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return util.responseUtil(ex.getMessage());
         }
 
 

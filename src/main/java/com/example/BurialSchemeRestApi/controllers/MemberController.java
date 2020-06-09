@@ -131,11 +131,14 @@ public class MemberController {
 			m.put("message", "success");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
 			
-		}catch(Exception e) {
+		}catch(NoSuchElementException e) {
 			Map<String, String> m = new HashMap<> ();
 			m.put("message", "No such Member");
 			logger.error("Trying to delete a member that does not exist");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return util.responseUtil(ex.getMessage());
 		}
 	}
 	
@@ -160,12 +163,15 @@ public class MemberController {
 		    m.put("data", memberRepo.save(member));
 		    return ResponseEntity.status(HttpStatus.OK).body(m);
 			
-		}catch(Exception e) {
+		}catch(NoSuchElementException e) {
 			
 			logger.error("Trying to update a member that does not exist");
 			m.put("message", "No such member");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
 
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return util.responseUtil(ex.getMessage());
 		}
 	}
 

@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
@@ -66,7 +67,7 @@ public class DependantController {
 		if(requestMap.get("IDNumber") !=null) {
 			IDNumber = requestMap.get("IDNumber").toString();
 		}
-		//TODO see deprecated date
+
 		if(requestMap.get("DOB") !=null) {
 			try {
 				DOB = new Date(new SimpleDateFormat("dd/MM/yyyy").parse(requestMap.get("DOB").toString()).getTime());
@@ -134,15 +135,21 @@ public class DependantController {
 				map.put("data", dependant);
 				return ResponseEntity.status(HttpStatus.OK).body(map);
 
-			}catch (Exception ex){
+			}catch (NoSuchElementException ex){
 				logger.error("No such relationship");
 				return util.responseUtil("No such relationship");
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return util.responseUtil(ex.getMessage());
 			}
 
 
-		}catch (Exception ex){
+		}catch (NoSuchElementException ex){
 			logger.error("No such Member");
 			return util.responseUtil("No such Member");
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return util.responseUtil(ex.getMessage());
 		}
 	
 	}
@@ -182,11 +189,14 @@ public class DependantController {
 			m.put("message", "success");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
 			
-		}catch(Exception e) {
+		}catch(NoSuchElementException e) {
 			Map<String, String> m = new HashMap<String, String> ();
 			m.put("message", "No such Dependant");
 			logger.error("Trying to delete a dependant that does not exist");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return util.responseUtil(ex.getMessage());
 		}
 	}
 	
@@ -223,7 +233,7 @@ public class DependantController {
 					IDNumber = requestMap.get("IDNumber").toString();
 					updateDep.setIDNumber(IDNumber);
 				}
-				//TODO see deprecated date
+
 				if(requestMap.get("DOB") !=null) {
 					DOB = new Date(new SimpleDateFormat("dd/MM/yyyy").parse(requestMap.get("DOB").toString()).getTime());
 					updateDep.setDOB(DOB);
@@ -250,22 +260,32 @@ public class DependantController {
 					return ResponseEntity.status(HttpStatus.OK).body(m);
 
 
-				}catch (Exception ex){
+				}catch (NoSuchElementException ex){
 					logger.error("No such relationship");
 					return util.responseUtil("No such relationship");
 				}
+				catch(Exception ex){
+					ex.printStackTrace();
+					return util.responseUtil(ex.getMessage());
+				}
 
-			}catch (Exception ex){
+			}catch (NoSuchElementException ex){
 				logger.error("No such Member");
 				return util.responseUtil("No such Member");
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return util.responseUtil(ex.getMessage());
 			}
 			
-		}catch(Exception e) {
+		}catch(NoSuchElementException e) {
 			
 			logger.error("Trying to update a dependant that does not exist");
 			m.put("message", "No such dependant");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
 
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return util.responseUtil(ex.getMessage());
 		}
 	}
 }

@@ -16,6 +16,7 @@ import java.math.RoundingMode;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
@@ -73,7 +74,6 @@ public class PremiumController {
             try {
                 Premium premium = new Premium();
                 premium.setAmount(amount);
-                premium.setDate(new Date(System.currentTimeMillis()));
                 premium.setMember(memberRepo.findById(id).orElseThrow());
                 premium.setTransactionType(t);
 
@@ -83,17 +83,23 @@ public class PremiumController {
                 return ResponseEntity.status(HttpStatus.OK).body(m);
 
 
-            }catch (Exception ex){
+            }catch (NoSuchElementException ex){
                 logger.error("No such Member");
                 return util.responseUtil("No such Member");
+            }catch(Exception ex){
+                ex.printStackTrace();
+                return util.responseUtil(ex.getMessage());
             }
 
 
-        }catch (Exception ex){
+        }catch (NoSuchElementException ex){
 
             logger.error("No such transaction type");
             return util.responseUtil("No such transaction type");
 
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return util.responseUtil(ex.getMessage());
         }
 
 
