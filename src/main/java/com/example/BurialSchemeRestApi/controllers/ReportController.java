@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 public class ReportController {
@@ -115,11 +116,14 @@ public class ReportController {
 
 
 
-        }catch (Exception e){
+        }catch (NoSuchElementException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
             logger.error("No such Member");
             return util.responseUtil("No such Member");
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return util.responseUtil(ex.getMessage());
         }
 
 

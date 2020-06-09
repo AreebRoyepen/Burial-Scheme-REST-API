@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @CrossOrigin
@@ -46,11 +49,14 @@ public class ClaimController {
 
 
     @PostMapping("/claim")
-    public ResponseEntity<?> claim(@RequestBody Map<String, Object> requestMap) {
+    public ResponseEntity<?> claim(@RequestBody Map<String, Object> requestMap) throws ParseException {
 
         Long id;
         Long type;
         BigDecimal amount;
+        Date deathDate;
+        Date buriedDate;
+        String burialPlace;
 
         if(requestMap.get("id")==null)
             return util.responseUtil("Invalid Request Body");
@@ -67,7 +73,21 @@ public class ClaimController {
         }else {
             amount = new BigDecimal(requestMap.get("amount").toString()).setScale(2, RoundingMode.HALF_EVEN);
         }
-
+        if(requestMap.get("deathDate") ==null){
+            return util.responseUtil("Invalid Request Body");
+        }else{
+            deathDate = new Date(new SimpleDateFormat("dd/MM/yyyy").parse(requestMap.get("deathDate").toString()).getTime());
+        }
+        if(requestMap.get("buriedDate") ==null){
+            return util.responseUtil("Invalid Request Body");
+        }else{
+            buriedDate = new Date(new SimpleDateFormat("dd/MM/yyyy").parse(requestMap.get("buriedDate").toString()).getTime());
+        }
+        if(requestMap.get("burialPlace") ==null){
+            return util.responseUtil("Invalid Request Body");
+        }else{
+            burialPlace = requestMap.get("burialPlace").toString();
+        }
 
         Map<String, Object> m = new HashMap<>();
         try {
@@ -99,7 +119,10 @@ public class ClaimController {
 
                     if(member.getDependants().isEmpty() || util.allDependantsClaimed(member)){
                         claim.setAmount(total);
-                        claim.setBuriedDate(new Date(System.currentTimeMillis()));
+                        claim.setClaimDate(new Date(System.currentTimeMillis()));
+                        claim.setBurialPlace(burialPlace);
+                        claim.setBuriedDate(buriedDate);
+                        claim.setDeathDate(deathDate);
                         claim.setMember(member);
                         claim.setTransactionType(t);
                         m.put("info", "This is the last claim possible so all funds are paid out");
@@ -110,9 +133,11 @@ public class ClaimController {
                         return ResponseEntity.status(HttpStatus.OK).body(m);
                     }
 
-                    //TODO
                     claim.setAmount(amount);
-                    claim.setBuriedDate(new Date(System.currentTimeMillis()));
+                    claim.setClaimDate(new Date(System.currentTimeMillis()));
+                    claim.setBurialPlace(burialPlace);
+                    claim.setBuriedDate(buriedDate);
+                    claim.setDeathDate(deathDate);
                     claim.setMember(member);
                     claim.setTransactionType(t);
                     m.put("message", "success");
@@ -121,31 +146,41 @@ public class ClaimController {
                     m.put("data", claimRepo.save(claim));
                     return ResponseEntity.status(HttpStatus.OK).body(m);
 
-                }catch (Exception ex){
+                }catch (NoSuchElementException ex){
 
                     logger.error("No such transaction type");
                     return util.responseUtil("No such transaction type");
 
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                    return util.responseUtil(ex.getMessage());
                 }
 
             }
 
-        }catch(Exception e) {
+        }catch(NoSuchElementException e) {
 
             logger.error("Trying to claim from a member that does not exist");
             m.put("message", "No such member");
             return ResponseEntity.status(HttpStatus.OK).body(m);
 
         }
+        catch (Exception ex){
+            ex.printStackTrace();
+            return util.responseUtil(ex.getMessage());
+        }
     }
 
     @PostMapping("/claimForDependant")
-    public ResponseEntity<?> claimForDep(@RequestBody Map<String, Object> requestMap) {
+    public ResponseEntity<?> claimForDep(@RequestBody Map<String, Object> requestMap) throws ParseException {
 
         Long id;
         Long d;
         Long type;
         BigDecimal amount;
+        Date deathDate;
+        Date buriedDate;
+        String burialPlace;
 
         if(requestMap.get("id")==null)
             return util.responseUtil("Invalid Request Body");
@@ -167,6 +202,21 @@ public class ClaimController {
         }else {
             amount = new BigDecimal(requestMap.get("amount").toString()).setScale(2, RoundingMode.HALF_EVEN);
         }
+        if(requestMap.get("deathDate") ==null){
+            return util.responseUtil("Invalid Request Body");
+        }else{
+            deathDate = new Date(new SimpleDateFormat("dd/MM/yyyy").parse(requestMap.get("deathDate").toString()).getTime());
+        }
+        if(requestMap.get("deathDate") ==null){
+            return util.responseUtil("Invalid Request Body");
+        }else{
+            buriedDate = new Date(new SimpleDateFormat("dd/MM/yyyy").parse(requestMap.get("deathDate").toString()).getTime());
+        }
+        if(requestMap.get("deathDate") ==null){
+            return util.responseUtil("Invalid Request Body");
+        }else{
+            burialPlace = requestMap.get("deathDate").toString();
+        }
         Map<String, Object> m = new HashMap<> ();
 
         try {
@@ -187,7 +237,6 @@ public class ClaimController {
                         TransactionType t = transactionTypeRepo.findById(type).orElseThrow();
                         Claim claim = new Claim();
 
-
                         BigDecimal total = util.getBalanceAtDate(member, new Date(System.currentTimeMillis())).setScale(2, RoundingMode.HALF_EVEN);
 
                         if(amount.compareTo(total) > 0){
@@ -196,8 +245,11 @@ public class ClaimController {
 
                         if((member.getDependants().size() == 1 || util.lastDependantToClaim(member)) && member.hasClaimed()){
                             claim.setAmount(total);
-                            claim.setBuriedDate(new Date(System.currentTimeMillis()));
-                            claim.setMember(member);
+                            claim.setClaimDate(new Date(System.currentTimeMillis()));
+                            claim.setBurialPlace(burialPlace);
+                            claim.setBuriedDate(buriedDate);
+                            claim.setDeathDate(deathDate);
+                            claim.setDependant(dep);
                             claim.setTransactionType(t);
                             m.put("info", "This is the last claim possible so all funds are paid out");
                             m.put("message", "success");
@@ -209,8 +261,11 @@ public class ClaimController {
 
 
                         claim.setAmount(amount);
-                        claim.setBuriedDate(new Date(System.currentTimeMillis()));
-                        claim.setMember(member);
+                        claim.setClaimDate(new Date(System.currentTimeMillis()));
+                        claim.setBurialPlace(burialPlace);
+                        claim.setBuriedDate(buriedDate);
+                        claim.setDeathDate(deathDate);
+                        claim.setDependant(dep);
                         claim.setTransactionType(t);
                         m.put("message", "success");
                         dep.setClaimed(true);
@@ -218,30 +273,39 @@ public class ClaimController {
                         m.put("data", claimRepo.save(claim));
                         return ResponseEntity.status(HttpStatus.OK).body(m);
 
-                    }catch (Exception ex){
+                    }catch (NoSuchElementException ex){
 
                         logger.error("No such transaction type");
                         return util.responseUtil("No such transaction type");
 
+                    }catch (Exception ex){
+                        ex.printStackTrace();
+                        return util.responseUtil(ex.getMessage());
                     }
 
 
                 }
 
-            }catch (Exception ex){
+            }catch (NoSuchElementException ex){
                 logger.error("Trying to claim from a dependant that does not exist");
                 m.put("message", "No such dependant");
                 return ResponseEntity.status(HttpStatus.OK).body(m);
+            }catch (Exception ex){
+                ex.printStackTrace();
+                return util.responseUtil(ex.getMessage());
             }
 
 
 
-        }catch(Exception e) {
+        }catch(NoSuchElementException e) {
 
             logger.error("Member that does not exist");
             m.put("message", "No such member");
             return ResponseEntity.status(HttpStatus.OK).body(m);
 
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return util.responseUtil(ex.getMessage());
         }
     }
 

@@ -1,9 +1,6 @@
 package com.example.BurialSchemeRestApi.controllers;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -145,18 +142,24 @@ public class UserController {
 				m.put("data", userRepo.save(theUser));
 				return ResponseEntity.status(HttpStatus.OK).body(m);
 
-			}catch (Exception e) {
+			}catch (NoSuchElementException e) {
 				logger.error("No such role");
 				return util.responseUtil("No such Role");
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return util.responseUtil(ex.getMessage());
 			}
 
 
-		}catch(Exception e) {
+		}catch(NoSuchElementException e) {
 
 			logger.error("Trying to update a user that does not exist");
 			m.put("message", "No such User");
 			return ResponseEntity.status(HttpStatus.OK).body(m);
 
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return util.responseUtil(ex.getMessage());
 		}
 
 	}
@@ -181,9 +184,12 @@ public class UserController {
 				userRepo.save(user);
 
 				return util.responseUtil("success");
-			}catch (Exception e) {
+			}catch (NoSuchElementException e) {
 				logger.error("No such user");
 				return util.responseUtil("No such user");
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return util.responseUtil(ex.getMessage());
 			}
 
 		} catch (Exception e) {
