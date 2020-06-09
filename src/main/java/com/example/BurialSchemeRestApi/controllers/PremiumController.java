@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,7 +43,7 @@ public class PremiumController {
         return ResponseEntity.status(HttpStatus.OK).body(m);
     }
 
-    @PostMapping("/addExpense")
+    @PostMapping("/addPremium")
     public ResponseEntity<?> addExpense(@RequestBody Map<String, Object> requestMap) {
 
         BigDecimal amount;

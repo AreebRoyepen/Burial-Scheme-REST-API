@@ -1,5 +1,6 @@
 package com.example.BurialSchemeRestApi.controllers;
 
+import java.sql.Date;
 import java.util.*;
 
 import com.example.BurialSchemeRestApi.models.Member;
@@ -37,7 +38,7 @@ public class MemberController {
 	@GetMapping("/members")
 	public ResponseEntity<?> allMembers() {
 		
-		Map<String, Object> m = new HashMap<String, Object> ();
+		Map<String, Object> m = new HashMap<>();
 		m.put("message", "success");
 		m.put("data", memberRepo.findAll());
 		return ResponseEntity.status(HttpStatus.OK).body(m);
@@ -68,19 +69,19 @@ public class MemberController {
 	@PostMapping("/addMember")
 	public ResponseEntity<?> addMember(@RequestBody Member m){
 		
-		List <Member> members = memberRepo.findAll();
+		List<Member> members = memberRepo.findAll();
 		Map<String, Object> map = new HashMap<String, Object> ();
 		
 		for(Member x : members) {
 			
 			if(	x.getName().equals(m.getName()) && x.getSurname().equals(m.getSurname())) {
 				
-				if( x.getNumber().equals(m.getNumber()) && x.getEmail().equals(m.getEmail())){
+				if( x.getCellNumber().equals(m.getCellNumber()) && x.getEmail().equals(m.getEmail())){
 				
 					map.put("message", "Member already exists");
 					return ResponseEntity.status(HttpStatus.OK).body(map);
 				
-				}else if(x.getNumber().equals(m.getNumber()) || x.getEmail().equals(m.getEmail())) {
+				}else if(x.getCellNumber().equals(m.getCellNumber()) || x.getEmail().equals(m.getEmail())) {
 				
 					map.put("message", "Similar Member already exists");
 					return ResponseEntity.status(HttpStatus.OK).body(map);
@@ -147,7 +148,9 @@ public class MemberController {
 			Member member =memberRepo.findById(id).orElseThrow();
 
 			if (p.getEmail() != null) member.setEmail(p.getEmail());
-		  	if (p.getNumber()!= null) member.setNumber(p.getNumber());
+		  	if (p.getCellNumber()!= null) member.setCellNumber(p.getCellNumber());
+			if (p.getHomeNumber()!= null) member.setHomeNumber(p.getHomeNumber());
+			if (p.getWorkNumber()!= null) member.setWorkNumber(p.getWorkNumber());
 		    if (p.getName() != null) member.setName(p.getName());
 		    if (p.getSurname() != null) member.setSurname(p.getSurname());
 			if(p.getDOB() != null) member.setDOB(p.getDOB());

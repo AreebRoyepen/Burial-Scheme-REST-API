@@ -1,7 +1,7 @@
 package com.example.BurialSchemeRestApi.models;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 public class Dependant {
@@ -11,9 +11,11 @@ public class Dependant {
     private long ID;
     private String name;
     private String surname;
+    private String IDNumber;
     private Date DOB;
     private Date DOE = new Date(System.currentTimeMillis());
     private boolean claimed = false;
+    private boolean child;
 
     @ManyToOne
     @JoinColumn(name = "memberID" , nullable = false)
@@ -45,6 +47,14 @@ public class Dependant {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getIDNumber() {
+        return IDNumber;
+    }
+
+    public void setIDNumber(String IDNumber) {
+        this.IDNumber = IDNumber;
     }
 
     public Date getDOB() {
@@ -81,6 +91,14 @@ public class Dependant {
 
     public Relationship getRelationship() {
         return relationship;
+    }
+
+    public boolean isChild() {
+        return child;
+    }
+
+    public void setChild(boolean child) {
+        this.child = child;
     }
 
     public void setRelationship(Relationship relationship) {

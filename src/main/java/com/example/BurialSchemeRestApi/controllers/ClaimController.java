@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,7 +83,15 @@ public class ClaimController {
                     TransactionType t = transactionTypeRepo.findById(type).orElseThrow();
                     Claim claim = new Claim();
 
-                    BigDecimal total = util.getTotalPremiums(member).setScale(2, RoundingMode.HALF_EVEN);
+                    BigDecimal total = util.getBalanceAtDate(member, new Date(System.currentTimeMillis())).setScale(2, RoundingMode.HALF_EVEN);
+
+                    if(total.compareTo(BigDecimal.ZERO) == 0){
+                        return util.responseUtil("No funds");
+                    }
+
+                    if(total.compareTo(BigDecimal.ZERO) < 0){
+                        return util.responseUtil("Negative Balance");
+                    }
 
                     if(amount.compareTo(total) > 0){
                         return util.responseUtil("Cannot claim more than total premiums paid");
@@ -91,7 +99,7 @@ public class ClaimController {
 
                     if(member.getDependants().isEmpty() || util.allDependantsClaimed(member)){
                         claim.setAmount(total);
-                        claim.setDate(new Date(System.currentTimeMillis()));
+                        claim.setBuriedDate(new Date(System.currentTimeMillis()));
                         claim.setMember(member);
                         claim.setTransactionType(t);
                         m.put("info", "This is the last claim possible so all funds are paid out");
@@ -104,7 +112,7 @@ public class ClaimController {
 
                     //TODO
                     claim.setAmount(amount);
-                    claim.setDate(new Date(System.currentTimeMillis()));
+                    claim.setBuriedDate(new Date(System.currentTimeMillis()));
                     claim.setMember(member);
                     claim.setTransactionType(t);
                     m.put("message", "success");
@@ -180,7 +188,7 @@ public class ClaimController {
                         Claim claim = new Claim();
 
 
-                        BigDecimal total = util.getTotalPremiums(member).setScale(2, RoundingMode.HALF_EVEN);
+                        BigDecimal total = util.getBalanceAtDate(member, new Date(System.currentTimeMillis())).setScale(2, RoundingMode.HALF_EVEN);
 
                         if(amount.compareTo(total) > 0){
                             return util.responseUtil("Cannot claim more than total premiums paid");
@@ -188,7 +196,7 @@ public class ClaimController {
 
                         if((member.getDependants().size() == 1 || util.lastDependantToClaim(member)) && member.hasClaimed()){
                             claim.setAmount(total);
-                            claim.setDate(new Date(System.currentTimeMillis()));
+                            claim.setBuriedDate(new Date(System.currentTimeMillis()));
                             claim.setMember(member);
                             claim.setTransactionType(t);
                             m.put("info", "This is the last claim possible so all funds are paid out");
@@ -201,7 +209,7 @@ public class ClaimController {
 
 
                         claim.setAmount(amount);
-                        claim.setDate(new Date(System.currentTimeMillis()));
+                        claim.setBuriedDate(new Date(System.currentTimeMillis()));
                         claim.setMember(member);
                         claim.setTransactionType(t);
                         m.put("message", "success");

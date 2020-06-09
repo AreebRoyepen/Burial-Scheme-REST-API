@@ -3,7 +3,8 @@ package com.example.BurialSchemeRestApi.models;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
+import java.util.Calendar;
+import java.sql.Date;
 
 @Entity
 public class Claim {
@@ -12,7 +13,10 @@ public class Claim {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long ID;
     private BigDecimal amount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
-    private Date date;
+    private Date claimDate = new Date(System.currentTimeMillis());
+    private Date deathDate;
+    private Date buriedDate;
+    private String burialPlace;
 
     @ManyToOne
     @JoinColumn(name = "transactionTypeID" , nullable = false)
@@ -42,14 +46,6 @@ public class Claim {
         this.amount = amount.setScale(2, RoundingMode.HALF_EVEN);
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public TransactionType getTransactionType() {
         return transactionType;
     }
@@ -72,5 +68,52 @@ public class Claim {
 
     public void setDependant(Dependant dependant) {
         this.dependant = dependant;
+    }
+
+    public Date getDeathDate() {
+        return deathDate;
+    }
+
+    public void setDeathDate(Date deathDate) {
+        this.deathDate = deathDate;
+    }
+
+    public Date getBuriedDate() {
+        return buriedDate;
+    }
+
+    public void setBuriedDate(Date buriedDate) {
+        this.buriedDate = buriedDate;
+    }
+
+    public String getBurialPlace() {
+        return burialPlace;
+    }
+
+    public void setBurialPlace(String burialPlace) {
+        this.burialPlace = burialPlace;
+    }
+
+    public Date getClaimDate() {
+        return claimDate;
+    }
+
+    public void setClaimDate(Date claimDate) {
+        this.claimDate = claimDate;
+    }
+
+    @Override
+    public String toString() {
+        return "Claim{" +
+                "ID=" + ID +
+                ", amount=" + amount +
+                ", claimDate=" + claimDate +
+                ", deathDate=" + deathDate +
+                ", buriedDate=" + buriedDate +
+                ", burialPlace='" + burialPlace + '\'' +
+                ", transactionType=" + transactionType +
+                ", member=" + member +
+                ", dependant=" + dependant +
+                '}';
     }
 }

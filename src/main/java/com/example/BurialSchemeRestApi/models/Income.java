@@ -3,7 +3,7 @@ package com.example.BurialSchemeRestApi.models;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 public class Income {
