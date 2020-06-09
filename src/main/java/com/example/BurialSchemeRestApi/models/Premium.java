@@ -3,7 +3,8 @@ package com.example.BurialSchemeRestApi.models;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
+import java.util.Calendar;
+import java.sql.Date;
 
 @Entity
 public class Premium {
@@ -12,7 +13,7 @@ public class Premium {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long ID;
     private BigDecimal amount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
-    private Date date;
+    private Date date =  new Date(System.currentTimeMillis());
 
     @ManyToOne
     @JoinColumn(name = "transactionTypeID" , nullable = false)
@@ -60,5 +61,16 @@ public class Premium {
 
     public void setMember(Member member) {
         this.member = member;
+    }
+
+    @Override
+    public String toString() {
+        return "Premium{" +
+                "ID=" + ID +
+                ", amount=" + amount +
+                ", date=" + date +
+                ", transactionType=" + transactionType +
+                ", member=" + member +
+                '}';
     }
 }
