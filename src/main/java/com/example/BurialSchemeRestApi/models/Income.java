@@ -12,7 +12,7 @@ public class Income {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long ID;
     private BigDecimal amount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
-    private Date date;
+    private Date date = new Date(System.currentTimeMillis());
 
     @ManyToOne
     @JoinColumn(name = "transactionTypeID" , nullable = false)
