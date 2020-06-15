@@ -7,7 +7,6 @@ import com.example.BurialSchemeRestApi.models.Premium;
 import com.example.BurialSchemeRestApi.repositories.ClaimRepo;
 import com.example.BurialSchemeRestApi.repositories.PremiumRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -23,15 +22,12 @@ import java.util.Set;
 @Component
 public class UtilClass {
 
-    @Autowired
     PremiumRepo premiumRepo;
-    @Autowired
     ClaimRepo claimRepo;
 
-    public ResponseEntity<?> responseUtil(String message) {
-        Map<String, String> m = new HashMap<String, String>();
-        m.put("message", message);
-        return ResponseEntity.status(HttpStatus.OK).body(m);
+    public UtilClass(PremiumRepo premiumRepo, ClaimRepo claimRepo) {
+        this.premiumRepo = premiumRepo;
+        this.claimRepo = claimRepo;
     }
 
     public BigDecimal getBalanceAtDate(Member member, Date date){
@@ -58,7 +54,7 @@ public class UtilClass {
 
         int x = 0;
         for (Dependant dependant: set) {
-            if(dependant.hasClaimed())
+            if(dependant.isClaimed())
                 x ++;
         }
         if(x == set.size()) {
@@ -74,7 +70,7 @@ public class UtilClass {
 
         int x = 0;
         for (Dependant dependant: set) {
-            if(dependant.hasClaimed())
+            if(dependant.isClaimed())
                 x ++;
         }
         if(x == set.size() -1) {

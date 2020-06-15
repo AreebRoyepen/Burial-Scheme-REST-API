@@ -1,107 +1,38 @@
 package com.example.BurialSchemeRestApi.controllers;
 
-import com.example.BurialSchemeRestApi.models.Premium;
-import com.example.BurialSchemeRestApi.models.TransactionType;
-import com.example.BurialSchemeRestApi.repositories.*;
-import com.example.BurialSchemeRestApi.util.UtilClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.BurialSchemeRestApi.api.ErrorMessage;
+import com.example.BurialSchemeRestApi.dto.PremiumDTO;
+import com.example.BurialSchemeRestApi.enums.ResponseStatus;
+import com.example.BurialSchemeRestApi.exception.ValidationException;
+import com.example.BurialSchemeRestApi.services.PremiumService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
 @RestController
 @CrossOrigin
+@RequestMapping("/v1/premiums")
 public class PremiumController {
 
-    Logger logger = LoggerFactory.getLogger(PremiumController.class);
+    PremiumService premiumService;
 
-    @Autowired
-    PremiumRepo premiumRepo;
-    @Autowired
-    MemberRepo memberRepo;
-    @Autowired
-    DependantRepo dependantRepo;
-    @Autowired
-    TransactionTypeRepo transactionTypeRepo;
-    @Autowired
-    private UtilClass util;
-
-    @GetMapping("/premiums")
-    public ResponseEntity<?> allPremiums() {
-
-        Map<String, Object> m = new HashMap<String, Object>();
-        m.put("message", "success");
-        m.put("data", premiumRepo.findAll());
-        return ResponseEntity.status(HttpStatus.OK).body(m);
+    public PremiumController(PremiumService premiumService) {
+        this.premiumService = premiumService;
     }
 
-    @PostMapping("/addPremium")
-    public ResponseEntity<?> addExpense(@RequestBody Map<String, Object> requestMap) {
+    @GetMapping()
+    public ResponseEntity<?> allPremiums() {
+        return new ResponseEntity<>(premiumService.allPremiums(), HttpStatus.OK);
+    }
 
-        BigDecimal amount;
-        Long id;
-        Long type;
+    @PostMapping()
+    public ResponseEntity<?> addExpense(@RequestBody PremiumDTO premiumDTO) {
 
-        if(requestMap.get("id")==null)
-            return util.responseUtil("Invalid Request Body");
-        else {
-            id = Long.parseLong(requestMap.get("id").toString());
+        try {
+            return new ResponseEntity<>(premiumService.addPremium(premiumDTO), HttpStatus.OK);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
         }
-        if(requestMap.get("type") ==null) {
-            return util.responseUtil("Invalid Request Body");
-        }else {
-            type = Long.parseLong(requestMap.get("type").toString());
-        }
-        if(requestMap.get("amount") ==null) {
-            return util.responseUtil("Invalid Request Body");
-        }else {
-            amount = new BigDecimal(requestMap.get("amount").toString()).setScale(2, RoundingMode.HALF_EVEN);
-        }
-
-        try{
-
-            TransactionType t = transactionTypeRepo.findById(type).orElseThrow();
-
-            try {
-                Premium premium = new Premium();
-                premium.setAmount(amount);
-                premium.setMember(memberRepo.findById(id).orElseThrow());
-                premium.setTransactionType(t);
-
-                Map<String, Object> m = new HashMap<String, Object> ();
-                m.put("message", "success");
-                m.put("data", premiumRepo.save(premium));
-                return ResponseEntity.status(HttpStatus.OK).body(m);
-
-
-            }catch (NoSuchElementException ex){
-                logger.error("No such Member");
-                return util.responseUtil("No such Member");
-            }catch(Exception ex){
-                ex.printStackTrace();
-                return util.responseUtil(ex.getMessage());
-            }
-
-
-        }catch (NoSuchElementException ex){
-
-            logger.error("No such transaction type");
-            return util.responseUtil("No such transaction type");
-
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return util.responseUtil(ex.getMessage());
-        }
-
 
     }
 
