@@ -49,7 +49,9 @@ public class ReportData {
         int i = claims.size();
         int j = premiums.size();
 
-        mergedList.add( new MemberStatementDTO(balanceBroughtDownDate, "Balance Brought Down",null, balanceBroughtDown));
+
+
+        mergedList.add( new MemberStatementDTO(utilClass.formatDate(balanceBroughtDownDate), "Balance Brought Down",null, balanceBroughtDown));
 
         while(i >0 && j >0){
 
@@ -57,12 +59,12 @@ public class ReportData {
 
                 balance = balance.subtract(claims.get(i-1).getAmount()).setScale(2, RoundingMode.HALF_EVEN);
                 System.out.println("claim: " + claims.get(i-1).getAmount());
-                mergedList.add(new MemberStatementDTO(claims.get(i-1).getClaimDate(),"Claim",claims.get(i-1).getAmount(),balance));
+                mergedList.add(new MemberStatementDTO(utilClass.formatDate(claims.get(i-1).getClaimDate()),"Claim",claims.get(i-1).getAmount(),balance));
                 i--;
             }else {
                 balance = balance.add(premiums.get(j-1).getAmount()).setScale(2, RoundingMode.HALF_EVEN);
                 System.out.println("premium: " + premiums.get(j-1).getAmount());
-                mergedList.add(new MemberStatementDTO(premiums.get(j-1).getDate(),"Contribution",premiums.get(j-1).getAmount(),balance));
+                mergedList.add(new MemberStatementDTO(utilClass.formatDate(premiums.get(j-1).getDate()),"Contribution",premiums.get(j-1).getAmount(),balance));
                 j--;
             }
         }
@@ -70,17 +72,17 @@ public class ReportData {
         while(i> 0){
             balance = balance.subtract(claims.get(i-1).getAmount()).setScale(2, RoundingMode.HALF_EVEN);
             System.out.println("claim after loop: " + claims.get(i-1).getAmount());
-            mergedList.add(new MemberStatementDTO(claims.get(i-1).getClaimDate(),"Claim",claims.get(i-1).getAmount(),balance));
+            mergedList.add(new MemberStatementDTO(utilClass.formatDate(claims.get(i-1).getClaimDate()),"Claim",claims.get(i-1).getAmount(),balance));
             i--;
         }
         while(j > 0){
             balance = balance.add(premiums.get(j-1).getAmount()).setScale(2, RoundingMode.HALF_EVEN);
             System.out.println("premium after loop: " + premiums.get(j-1).getAmount());
-            mergedList.add(new MemberStatementDTO(premiums.get(j-1).getDate(),"Premium",premiums.get(j-1).getAmount(),balance));
+            mergedList.add(new MemberStatementDTO(utilClass.formatDate(premiums.get(j-1).getDate()),"Premium",premiums.get(j-1).getAmount(),balance));
             j--;
         }
 
-        mergedList.add( new MemberStatementDTO(new Date(System.currentTimeMillis()),"Current Balance",null, balance));
+        mergedList.add( new MemberStatementDTO(utilClass.formatDate(new Date(System.currentTimeMillis())),"Current Balance",null, balance));
 
         return mergedList;
 

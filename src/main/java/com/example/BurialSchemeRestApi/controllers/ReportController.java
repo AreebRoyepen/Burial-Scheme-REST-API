@@ -5,6 +5,7 @@ import com.example.BurialSchemeRestApi.dto.ReportServiceDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.services.ReportService;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ public class ReportController {
             ReportServiceDTO m = reportService.getStatement(id);
 
             return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
-                    .body(m.getInputStream());
+                    .body(new InputStreamResource(m.getInputStream()));
 
         } catch (ValidationException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
@@ -42,7 +43,7 @@ public class ReportController {
             ReportServiceDTO m = reportService.claimDump(order);
 
             return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
-                    .body(m.getInputStream());
+                    .body(new InputStreamResource(m.getInputStream()));
 
         } catch (ValidationException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
@@ -57,7 +58,7 @@ public class ReportController {
             ReportServiceDTO m = reportService.memberDump();
 
             return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
-                    .body(m.getInputStream());
+                    .body(new InputStreamResource(m.getInputStream()));
 
         } catch (ValidationException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);

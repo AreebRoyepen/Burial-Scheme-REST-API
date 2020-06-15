@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.sql.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,7 +13,7 @@ import java.sql.Date;
 @Data
 public class MemberStatementDTO {
 
-    Date date;
+    String date;
     String desc;
     BigDecimal amount;
     BigDecimal balance;

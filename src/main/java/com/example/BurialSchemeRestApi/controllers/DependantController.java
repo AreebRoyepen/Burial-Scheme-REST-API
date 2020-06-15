@@ -35,7 +35,6 @@ public class DependantController {
 		}
 	
 	}
-
 	
 	@GetMapping("/{name}")
 	public ResponseEntity<?> getDependantByName(@PathVariable String name){

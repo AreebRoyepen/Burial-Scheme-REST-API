@@ -1,9 +1,9 @@
 package com.example.BurialSchemeRestApi.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -26,6 +26,7 @@ public class Dependant {
     private boolean claimed = false;
     private boolean child;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "memberID" , nullable = false)
     private Member member;

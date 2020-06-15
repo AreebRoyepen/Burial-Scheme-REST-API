@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import java.io.InputStream;
+import java.io.ByteArrayInputStream;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,6 +17,6 @@ public class ReportServiceDTO {
 
     HttpHeaders httpHeaders;
     MediaType contentType;
-    InputStream inputStream;
+    ByteArrayInputStream inputStream;
 
 }
