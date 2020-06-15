@@ -26,7 +26,7 @@ public class PremiumController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> addExpense(@RequestBody PremiumDTO premiumDTO) {
+    public ResponseEntity<?> addPremium(@RequestBody PremiumDTO premiumDTO) {
 
         try {
             return new ResponseEntity<>(premiumService.addPremium(premiumDTO), HttpStatus.OK);

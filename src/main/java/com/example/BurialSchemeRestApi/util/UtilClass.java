@@ -6,17 +6,13 @@ import com.example.BurialSchemeRestApi.models.Member;
 import com.example.BurialSchemeRestApi.models.Premium;
 import com.example.BurialSchemeRestApi.repositories.ClaimRepo;
 import com.example.BurialSchemeRestApi.repositories.PremiumRepo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.Date;
-import java.util.HashMap;
+import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -79,6 +75,10 @@ public class UtilClass {
         else {
             return false;
         }
+    }
+
+    public String formatDate(Date date){
+        return new SimpleDateFormat("dd-MM-yyyy").format(date);
     }
 
 }

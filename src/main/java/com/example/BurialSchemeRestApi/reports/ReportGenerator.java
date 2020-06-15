@@ -2,6 +2,7 @@ package com.example.BurialSchemeRestApi.reports;
 
 import com.example.BurialSchemeRestApi.models.Claim;
 import com.example.BurialSchemeRestApi.models.Member;
+import com.example.BurialSchemeRestApi.util.UtilClass;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,12 @@ import java.util.Map;
 @Component
 public class ReportGenerator {
 
+    UtilClass utilClass;
+
+    public ReportGenerator(UtilClass utilClass) {
+        this.utilClass = utilClass;
+    }
+
     public byte[] generateStatement(Member member, List list) throws FileNotFoundException, JRException {
 
         File file = ResourceUtils.getFile("classpath:Statement.jrxml");
@@ -26,7 +33,7 @@ public class ReportGenerator {
         parameters.put("address1", member.getAddress());
         parameters.put("address2", member.getArea());
         parameters.put("address3", member.getPostalCode());
-        parameters.put("joinDate", member.getDOE().toString());
+        parameters.put("joinDate", utilClass.formatDate(member.getDOE()));
         parameters.put("memberNo",Long.toString(member.getID()));
 
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters, dataSource);

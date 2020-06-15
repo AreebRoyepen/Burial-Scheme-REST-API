@@ -37,14 +37,14 @@ public class IncomeController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> allExpenses() {
+    public ResponseEntity<?> allIncome() {
 
         return new ResponseEntity<>(incomeService.allExpenses(), HttpStatus.OK);
 
     }
 
-    @GetMapping()
-    public ResponseEntity<?> addExpense(@PathVariable BigDecimal amount, @PathVariable Long type) {
+    @GetMapping("/{amount}/{type}")
+    public ResponseEntity<?> addIncome(@PathVariable BigDecimal amount, @PathVariable Long type) {
 
         try {
             return new ResponseEntity<>(incomeService.addExpense(amount, type), HttpStatus.OK);

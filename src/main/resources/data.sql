@@ -9,6 +9,11 @@ insert into transaction_type(name) values ("claim");
 insert into transaction_type(name) values ("income");
 insert into transaction_type(name) values ("expense");
 
+insert into relationship(name) values ("child");
+insert into relationship(name) values ("parent");
+insert into relationship(name) values ("spouse");
+insert into relationship(name) values ("other");
+
 insert into member(name,surname,email,IDNumber,address, area,home_Number,cell_Number,work_Number,DOB, doe,claimed,paid_joining_fee) values
                 ("Areeb","Royepen","a@g.c","1111111111111","16 Smartt Rd","Goodwood","1111111111","1111111111","1111111111","1998-04-02","2020-01-01", false, false);
 

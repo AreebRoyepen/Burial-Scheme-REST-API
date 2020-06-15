@@ -22,10 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 class ClaimRepoTest {
 
-    @Autowired
     ClaimRepo claimRepo;
-    @Autowired
     MemberRepo memberRepo;
+
+    public ClaimRepoTest(ClaimRepo claimRepo, MemberRepo memberRepo) {
+        this.claimRepo = claimRepo;
+        this.memberRepo = memberRepo;
+    }
 
     @Test
     void findAllByMember() {

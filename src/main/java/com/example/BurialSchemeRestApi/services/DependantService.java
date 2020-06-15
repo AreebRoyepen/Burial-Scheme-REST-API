@@ -3,7 +3,6 @@ package com.example.BurialSchemeRestApi.services;
 import com.example.BurialSchemeRestApi.api.Message;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
 import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
-import com.example.BurialSchemeRestApi.controllers.DependantController;
 import com.example.BurialSchemeRestApi.dto.DependantDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
@@ -13,7 +12,6 @@ import com.example.BurialSchemeRestApi.models.Relationship;
 import com.example.BurialSchemeRestApi.repositories.DependantRepo;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 import com.example.BurialSchemeRestApi.repositories.RelationshipRepo;
-import com.example.BurialSchemeRestApi.util.UtilClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,7 @@ import java.util.NoSuchElementException;
 @Service
 public class DependantService {
 
-    Logger logger = LoggerFactory.getLogger(DependantController.class);
+    Logger logger = LoggerFactory.getLogger(DependantService.class);
 
     MemberRepo memberRepo;
     DependantRepo dependantRepo;
@@ -50,15 +48,7 @@ public class DependantService {
                 dependant.setRelationship(r);
                 dependant.setMember(m);
                 dependant.setDOB(dependantDTO.getDOB());
-                if(dependantDTO.getChild() != null){
-                    if(dependantDTO.getChild().equalsIgnoreCase("true")){
-                        dependant.setChild(true);
-                    }else if(dependantDTO.getChild().equalsIgnoreCase("false")){
-                        dependant.setChild(false);
-                    }else{
-                        throw new ValidationException("Invalid Request Body");
-                    }
-                }
+                dependant.setChild(dependantDTO.isChild());
                 dependant.setIDNumber(dependantDTO.getIDNumber());
                 dependant.setName(dependantDTO.getName());
                 dependant.setSurname(dependantDTO.getSurname());
@@ -141,15 +131,7 @@ public class DependantService {
                 if(dependantDTO.getSurname() != null) updateDep.setSurname(dependantDTO.getSurname());
                 if(dependantDTO.getIDNumber() != null) updateDep.setIDNumber(dependantDTO.getIDNumber());
                 if(dependantDTO.getDOB()!=null) updateDep.setDOB(dependantDTO.getDOB());
-                if(dependantDTO.getChild() != null){
-                    if(dependantDTO.getChild().equalsIgnoreCase("true")){
-                        updateDep.setChild(true);
-                    }else if(dependantDTO.getChild().equalsIgnoreCase("false")){
-                        updateDep.setChild(false);
-                    }else{
-                        throw new ValidationException("Invalid Request Body");
-                    }
-                }
+                updateDep.setChild(dependantDTO.isChild());
 
                 try{
                     if(dependantDTO.getRelationship() != 0)
