@@ -4,19 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
-import java.sql.Date;
+import java.io.InputStream;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder(toBuilder = true)
 @Data
-public class MemberStatementDTO {
+public class ReportServiceDTO {
 
-    Date date;
-    String desc;
-    BigDecimal amount;
-    BigDecimal balance;
+    HttpHeaders httpHeaders;
+    MediaType contentType;
+    InputStream inputStream;
 
 }

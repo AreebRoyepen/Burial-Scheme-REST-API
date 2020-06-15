@@ -1,98 +1,38 @@
 package com.example.BurialSchemeRestApi.controllers;
 
-import com.example.BurialSchemeRestApi.models.Expense;
-import com.example.BurialSchemeRestApi.models.TransactionType;
-import com.example.BurialSchemeRestApi.repositories.DependantRepo;
-import com.example.BurialSchemeRestApi.repositories.ExpenseRepo;
-import com.example.BurialSchemeRestApi.repositories.MemberRepo;
-import com.example.BurialSchemeRestApi.repositories.TransactionTypeRepo;
-import com.example.BurialSchemeRestApi.util.UtilClass;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.BurialSchemeRestApi.api.ErrorMessage;
+import com.example.BurialSchemeRestApi.dto.ExpenseDTO;
+import com.example.BurialSchemeRestApi.enums.ResponseStatus;
+import com.example.BurialSchemeRestApi.exception.ValidationException;
+import com.example.BurialSchemeRestApi.services.ExpenseService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
 @RestController
 @CrossOrigin
+@RequestMapping("/v1/expenses")
 public class ExpenseController {
 
-    Logger logger = LoggerFactory.getLogger(ExpenseController.class);
+    ExpenseService expenseService;
 
-    @Autowired
-    MemberRepo memberRepo;
-    @Autowired
-    DependantRepo dependantRepo;
-    @Autowired
-    ExpenseRepo expenseRepo;
-    @Autowired
-    TransactionTypeRepo transactionTypeRepo;
-    @Autowired
-    private UtilClass util;
-
-    @GetMapping("/expenses")
-    public ResponseEntity<?> allExpenses() {
-
-        Map<String, Object> m = new HashMap<String, Object>();
-        m.put("message", "success");
-        m.put("data", expenseRepo.findAll());
-        return ResponseEntity.status(HttpStatus.OK).body(m);
+    public ExpenseController(ExpenseService expenseService) {
+        this.expenseService = expenseService;
     }
 
-    @PostMapping("/addExpense")
-    public ResponseEntity<?> addExpense(@RequestBody Map<String, Object> requestMap) {
+    @GetMapping()
+    public ResponseEntity<?> allExpenses() {
+        return new ResponseEntity<>(expenseService.allExpenses(), HttpStatus.OK);
+    }
 
-        BigDecimal amount;
-        String reason;
-        Long type;
+    @PostMapping()
+    public ResponseEntity<?> addExpense(@RequestBody ExpenseDTO expenseDTO) {
 
-        if(requestMap.get("reason")==null)
-            return util.responseUtil("Invalid Request Body");
-        else {
-            reason = requestMap.get("reason").toString();
+        try {
+            return new ResponseEntity<>(expenseService.addExpense(expenseDTO), HttpStatus.OK);
+        } catch (ValidationException e) {
+            return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
         }
-        if(requestMap.get("type") ==null) {
-            return util.responseUtil("Invalid Request Body");
-        }else {
-            type = Long.parseLong(requestMap.get("type").toString());
-        }
-        if(requestMap.get("amount") ==null) {
-            return util.responseUtil("Invalid Request Body");
-        }else {
-            amount = new BigDecimal(requestMap.get("amount").toString()).setScale(2, RoundingMode.HALF_EVEN);
-        }
-
-        try{
-
-            TransactionType t = transactionTypeRepo.findById(type).orElseThrow();
-            Expense expense = new Expense();
-
-            expense.setAmount(amount);
-            expense.setReason(reason);
-            expense.setTransactionType(t);
-
-            Map<String, Object> m = new HashMap<String, Object> ();
-            m.put("message", "success");
-            m.put("data", expenseRepo.save(expense));
-            return ResponseEntity.status(HttpStatus.OK).body(m);
-        }catch (NoSuchElementException ex){
-
-            logger.error("No such transaction type");
-            return util.responseUtil("No such transaction type");
-
-        }catch(Exception ex){
-            ex.printStackTrace();
-            return util.responseUtil(ex.getMessage());
-        }
-
-
     }
 
 }

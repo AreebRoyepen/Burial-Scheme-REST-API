@@ -1,9 +1,18 @@
 package com.example.BurialSchemeRestApi.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.sql.Date;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+@Data
 public class Dependant {
 
     @Id
@@ -25,83 +34,4 @@ public class Dependant {
     @JoinColumn(name = "relationshipID" , nullable = false)
     private Relationship relationship;
 
-    public long getID() {
-        return ID;
-    }
-
-    public void setID(long ID) {
-        this.ID = ID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getIDNumber() {
-        return IDNumber;
-    }
-
-    public void setIDNumber(String IDNumber) {
-        this.IDNumber = IDNumber;
-    }
-
-    public Date getDOB() {
-        return DOB;
-    }
-
-    public void setDOB(Date DOB) {
-        this.DOB = DOB;
-    }
-
-    public Date getDOE() {
-        return DOE;
-    }
-
-    public void setDOE(Date DOE) {
-        this.DOE = DOE;
-    }
-
-    public boolean hasClaimed() {
-        return claimed;
-    }
-
-    public void setClaimed(boolean claimed) {
-        this.claimed = claimed;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
-    public Relationship getRelationship() {
-        return relationship;
-    }
-
-    public boolean isChild() {
-        return child;
-    }
-
-    public void setChild(boolean child) {
-        this.child = child;
-    }
-
-    public void setRelationship(Relationship relationship) {
-        this.relationship = relationship;
-    }
 }

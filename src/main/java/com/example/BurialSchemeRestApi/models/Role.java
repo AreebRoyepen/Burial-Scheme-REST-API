@@ -1,37 +1,25 @@
 package com.example.BurialSchemeRestApi.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder(toBuilder = true)
+@Data
 public class Role {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long ID;
 	private String name;
-	
-	public long getID() {
-		return ID;
-	}
-	public void setID(long iD) {
-		ID = iD;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	@Override
-	public String toString() {
-		return "Role [ID=" + ID + ", roleName=" + name + "]";
-	}
-	
-	
-	
-	
 
 }
