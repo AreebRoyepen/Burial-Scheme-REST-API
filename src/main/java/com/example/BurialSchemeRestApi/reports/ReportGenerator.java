@@ -50,6 +50,7 @@ public class ReportGenerator {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(stream, "UTF-8"));
 
+        //todo add header
         for (Claim claim : claims){
 
             StringBuffer oneLine = new StringBuffer();
@@ -77,6 +78,8 @@ public class ReportGenerator {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(stream, "UTF-8"));
+
+        //todo add header
         for (Member member : members){
 
             StringBuffer oneLine = new StringBuffer();

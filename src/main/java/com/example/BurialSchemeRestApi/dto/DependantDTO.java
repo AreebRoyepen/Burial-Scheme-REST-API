@@ -16,6 +16,7 @@ public class DependantDTO {
     String surname ;
     String IDNumber ;
     Date DOB ;
+    Date DOE;
     boolean child;
     @NonNull long member;
     @NonNull long relationship;

@@ -16,7 +16,5 @@ import java.io.Serializable;
 public class UserResponseMessage implements Serializable {
 
     String token;
-    Object data;
-
 
 }

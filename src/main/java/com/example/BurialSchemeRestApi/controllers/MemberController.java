@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.TimeUnit;
+
 
 @RestController
 @CrossOrigin
@@ -23,8 +25,20 @@ public class MemberController {
 	}
 
 	@GetMapping()
-	public ResponseEntity<ResponseMessageList> allMembers() {
+	public ResponseEntity<ResponseMessageList> allMembers() throws InterruptedException {
+		TimeUnit.SECONDS.sleep(3);
 		return new ResponseEntity<>(memberService.allMembers(), HttpStatus.OK);
+	}
+
+	@GetMapping("/dependants/{id}")
+	public ResponseEntity<?> dependants(@PathVariable Long id){
+
+		try{
+			return new ResponseEntity<>(memberService.membersDependants(id),HttpStatus.OK);
+		}catch (ValidationException e){
+			return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
+		}
+
 	}
 
 	@PostMapping()

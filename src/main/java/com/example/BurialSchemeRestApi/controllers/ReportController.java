@@ -21,14 +21,17 @@ public class ReportController {
         this.reportService = reportService;
     }
 
-    @GetMapping("/memberStatement/{id}")
-    public ResponseEntity<?> statement(@PathVariable Long id){
+    @GetMapping({"/memberStatement/{id}", "/memberStatement/{id}/{email}"})
+    public ResponseEntity<?> statement(@PathVariable Long id, @PathVariable(required = false) String email){
 
         try {
-            ReportServiceDTO m = reportService.getStatement(id);
-
-            return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
-                    .body(new InputStreamResource(m.getInputStream()));
+            if (email == null){
+                ReportServiceDTO m = reportService.getStatement(id);
+                return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
+                        .body(new InputStreamResource(m.getInputStream()));
+            }else{
+                return new ResponseEntity<>(reportService.emailStatement(id, email), HttpStatus.OK);
+            }
 
         } catch (ValidationException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
@@ -36,14 +39,19 @@ public class ReportController {
 
     }
 
-    @GetMapping({"/deaths/{order}", "/deaths"})
-    public ResponseEntity<?> claimDump(@PathVariable(required = false) String order){
+    @GetMapping({"/deaths", "/deaths/{email}"})
+    public ResponseEntity<?> claimDump(@PathVariable(required = false) String order,
+                                       @PathVariable(required = false) String email){
 
         try {
-            ReportServiceDTO m = reportService.claimDump(order);
+            if (email == null){
+                ReportServiceDTO m = reportService.claimDump(order);
 
-            return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
-                    .body(new InputStreamResource(m.getInputStream()));
+                return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
+                        .body(new InputStreamResource(m.getInputStream()));
+            }else{
+                return new ResponseEntity<>(reportService.emailClaimDump(order, email), HttpStatus.OK);
+            }
 
         } catch (ValidationException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
@@ -51,19 +59,25 @@ public class ReportController {
 
     }
 
-    @GetMapping("/memberDump")
-    public ResponseEntity<?> memberDump(){
+    @GetMapping({"/memberDump", "/memberDump/{email}"})
+    public ResponseEntity<?> memberDump(@PathVariable(required = false) String email){
 
         try {
-            ReportServiceDTO m = reportService.memberDump();
+            if(email == null){
+                ReportServiceDTO m = reportService.memberDump();
 
-            return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
-                    .body(new InputStreamResource(m.getInputStream()));
+                return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
+                        .body(new InputStreamResource(m.getInputStream()));
+
+            }else{
+                return new ResponseEntity<>(reportService.emailMemberDump(email), HttpStatus.OK);
+            }
 
         } catch (ValidationException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
         }
 
     }
+
 
 }

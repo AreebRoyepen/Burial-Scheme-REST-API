@@ -31,25 +31,20 @@ public class MemberService {
         return ResponseMessageList.builder().data(memberRepo.findAll()).message(ResponseStatus.SUCCESS.name()).build();
     }
 
-//    public ResponseMessage membersDependants(long id) throws ValidationException {
-//
-//        try{
-//
-//            Member member = memberRepo.findById(id).orElseThrow();
-//
-//            Set set = new HashSet();
-//            set.addAll(member.getDependants());
-//
-//            Map<Object, Object> m = new HashMap<> ();
-//            m.put("data", set);
-//            return new ResponseMessage(m, ResponseStatus.SUCCESS.name());
-//
-//        }catch (Exception ex){
-//            logger.error("No such Member");
-//            throw new ValidationException("No such Member");
-//        }
-//
-//    }
+    public ResponseMessageList membersDependants(long id) throws ValidationException {
+
+        try{
+
+            Member member = memberRepo.findById(id).orElseThrow();
+
+            return ResponseMessageList.builder().data(member.getDependants()).message(ResponseStatus.SUCCESS.name()).build();
+
+        }catch (Exception ex){
+            logger.error("No such Member");
+            throw new ValidationException("No such Member");
+        }
+
+    }
 
     public Message addMember(Member m) throws ValidationException {
 
@@ -117,6 +112,7 @@ public class MemberService {
             if (p.getHomeNumber()!= null) member.setHomeNumber(p.getHomeNumber());
             if (p.getWorkNumber()!= null) member.setWorkNumber(p.getWorkNumber());
             if(p.getDOB() != null) member.setDOB(p.getDOB());
+            member.setPaidJoiningFee(p.isPaidJoiningFee());
 
             return ResponseMessageObject.builder().data(memberRepo.save(member)).message(ResponseStatus.SUCCESS.name()).build();
 

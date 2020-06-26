@@ -37,6 +37,23 @@ public class DependantService {
         return ResponseMessageList.builder().data(dependantRepo.findAll()).message(ResponseStatus.SUCCESS.name()).build();
     }
 
+    public ResponseMessageObject myMember(Long id) throws ValidationException {
+
+        try{
+
+            Dependant dep = dependantRepo.findById(id).orElseThrow();
+            return ResponseMessageObject.builder().data(dep.getMember()).message(ResponseStatus.SUCCESS.name()).build();
+
+        }catch (NoSuchElementException ex){
+            logger.error("No such dependant");
+            throw new ValidationException("No such dependant");
+        }catch (Exception ex){
+            logger.error(ex.getMessage());
+            throw new ValidationException(ex.getMessage());
+        }
+
+    }
+
     public Message addDependant(DependantDTO dependantDTO) throws ValidationException {
 
         try{
@@ -131,6 +148,7 @@ public class DependantService {
                 if(dependantDTO.getSurname() != null) updateDep.setSurname(dependantDTO.getSurname());
                 if(dependantDTO.getIDNumber() != null) updateDep.setIDNumber(dependantDTO.getIDNumber());
                 if(dependantDTO.getDOB()!=null) updateDep.setDOB(dependantDTO.getDOB());
+                if(dependantDTO.getDOE()!= null)updateDep.setDOE(dependantDTO.getDOE());
                 updateDep.setChild(dependantDTO.isChild());
 
                 try{

@@ -58,13 +58,11 @@ public class UserService {
 
         // check if user is active
         if (!user.isActive())
-            throw new ValidationException();
+            throw new ValidationException("User does not exist");
 
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        final String token = jwtTokenUtil.generateToken(userDetails, user);
 
-        //long exp = expirationTime(jwtTokenUtil.getExpirationDateFromToken(token)) / 1000;
-
-        return UserResponseMessage.builder().token(new JwtResponse(token).getToken()).data(user).build();
+        return UserResponseMessage.builder().token(new JwtResponse(token).getToken()).build();
 
     }
 

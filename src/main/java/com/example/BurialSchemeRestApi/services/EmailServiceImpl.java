@@ -7,7 +7,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,12 +14,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EmailServiceImpl implements EmailService{
-	
-	@Autowired
+
 	private JavaMailSender emailSender;
 
+	public EmailServiceImpl(JavaMailSender emailSender) {
+		this.emailSender = emailSender;
+	}
+
 	@Override
-	public void sendEmailWithAttachment(String reportName, String to, String body, String subject, ByteArrayInputStream report) throws MessagingException {
+	public void sendEmailWithAttachment(String reportName, String to, String body, String subject, ByteArrayInputStream report, String type) throws MessagingException {
 
 		
 		try {
@@ -32,7 +34,7 @@ public class EmailServiceImpl implements EmailService{
 			helper.setSubject(subject);
 			helper.setText(body);
 			ByteArrayDataSource resource;
-			resource = new ByteArrayDataSource(report, "application/pdf");
+			resource = new ByteArrayDataSource(report, type);
 			helper.addAttachment( reportName, resource);
 			
 			emailSender.send(message);
