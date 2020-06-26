@@ -26,7 +26,7 @@ public class Dependant {
     private boolean claimed = false;
     private boolean child;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "memberID" , nullable = false)
     private Member member;

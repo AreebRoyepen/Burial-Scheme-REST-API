@@ -16,7 +16,7 @@ public class ClaimDTO {
 
     @NonNull private long ID;
     @NonNull private BigDecimal amount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
-    @NonNull private Date claimDate = new Date(System.currentTimeMillis());
+    private Date claimDate = new Date(System.currentTimeMillis());
     @NonNull private Date deathDate;
     @NonNull private Date buriedDate;
     @NonNull private String burialPlace;

@@ -90,9 +90,12 @@ public class ReportData {
 
     public List getClaimDump (String order){
 
-        List<Claim> claims;
+        List<Claim> claims = new ArrayList<>();
 
-        if(order.equalsIgnoreCase("buried")){
+        if(order == null){
+            claims = claimRepo.findAll();
+
+        } else if(order.equalsIgnoreCase("buried")){
 
             claims = claimRepo.findAllByOrderByBuriedDate();
 
@@ -104,8 +107,6 @@ public class ReportData {
 
             claims = claimRepo.findAllByOrderByClaimDate();
 
-        }else{
-            claims = claimRepo.findAll();
         }
 
         return claims;

@@ -1,6 +1,7 @@
 package com.example.BurialSchemeRestApi.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,9 +36,10 @@ public class Member {
 	private Date DOB;
 	private Date DOE = new Date(System.currentTimeMillis());
 	private boolean claimed = false;
-	private boolean paidJoiningFee = false;
+	private boolean paidJoiningFee;
 
+	@JsonIgnore
 	@OneToMany(mappedBy="member")
-	private Set<Dependant> dependants;
+	private List<Dependant> dependants;
 
 }

@@ -25,6 +25,17 @@ public class DependantController {
 		return new ResponseEntity<>(dependantService.allMembers(),HttpStatus.OK);
 	}
 
+	@GetMapping("/member/{id}")
+	public ResponseEntity<?> myMember(@PathVariable Long id){
+
+		try {
+			return new ResponseEntity<>(dependantService.myMember(id), HttpStatus.OK);
+		} catch (ValidationException e) {
+			return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
 	@PostMapping()
 	public ResponseEntity<?> addDependant(@RequestBody DependantDTO dependantDTO){
 
