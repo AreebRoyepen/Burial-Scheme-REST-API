@@ -16,9 +16,12 @@ import com.example.BurialSchemeRestApi.models.User;
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
-	@Autowired
 	private UserRepo userRepo;
-	
+
+	public JwtUserDetailsService(UserRepo userRepo) {
+		this.userRepo = userRepo;
+	}
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.example.BurialSchemeRestApi.api.ErrorMessage;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
+import com.example.BurialSchemeRestApi.jwt.JwtRefreshRequest;
 import com.example.BurialSchemeRestApi.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,11 +46,11 @@ public class UserController {
 
 	}
 
-	@GetMapping("/refresh")
-	public ResponseEntity<?> refreshAndGetAuthenticationToken(HttpServletRequest request) {
+	@PostMapping("/refresh")
+	public ResponseEntity<?> refreshAndGetAuthenticationToken(@RequestBody JwtRefreshRequest request) {
 
 		try {
-			return new ResponseEntity<>(userService.refreshAndGetAuthenticationToken(request), HttpStatus.OK);
+			return new ResponseEntity<>(userService.refresh(request), HttpStatus.OK);
 		} catch (ValidationException e) {
 			return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.UNAUTHORIZED);
 		}
