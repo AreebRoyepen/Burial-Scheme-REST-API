@@ -16,5 +16,6 @@ import java.io.Serializable;
 public class UserResponseMessage implements Serializable {
 
     String token;
+    String refreshToken;
 
 }

@@ -25,10 +25,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 	
 	Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
 	
-	@Autowired
 	private JwtUserDetailsService jwtUserDetailsService;
-	@Autowired
 	private JwtTokenUtil jwtTokenUtil;
+
+	public JwtRequestFilter(JwtUserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil) {
+		this.jwtUserDetailsService = jwtUserDetailsService;
+		this.jwtTokenUtil = jwtTokenUtil;
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -52,6 +55,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			logger.info("User Registering");
 		} else if (request.getRequestURI().contains("login")) {
 			logger.info("User Logging In");
+		} else if (request.getRequestURI().contains("refresh")) {
+			logger.info("User refreshing token");
 		} else {
 			logger.warn("JWT Token does not begin with Bearer String");
 		}

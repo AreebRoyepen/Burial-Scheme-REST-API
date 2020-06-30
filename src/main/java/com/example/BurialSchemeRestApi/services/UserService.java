@@ -7,6 +7,7 @@ import com.example.BurialSchemeRestApi.api.UserResponseMessage;
 import com.example.BurialSchemeRestApi.dto.UserDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
+import com.example.BurialSchemeRestApi.jwt.JwtRefreshRequest;
 import com.example.BurialSchemeRestApi.jwt.JwtRequest;
 import com.example.BurialSchemeRestApi.jwt.JwtResponse;
 import com.example.BurialSchemeRestApi.jwt.JwtTokenUtil;
@@ -24,28 +25,29 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+
 
 @Service
 public class UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
+    private HashMap<String, String> refreshTokens = new HashMap<>();
+
     private AuthenticationManager authenticationManager;
     private JwtTokenUtil jwtTokenUtil;
     private JwtUserDetailsService userDetailsService;
-    private PasswordEncoder bcryptEncoder;
+    private PasswordEncoder bCryptEncoder;
     private UserRepo userRepo;
     private RoleRepo roleRepo;
 
     public UserService(AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil,
-                       JwtUserDetailsService userDetailsService, PasswordEncoder bcryptEncoder, UserRepo userRepo, RoleRepo roleRepo) {
+                       JwtUserDetailsService userDetailsService, PasswordEncoder bCryptEncoder, UserRepo userRepo, RoleRepo roleRepo) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userDetailsService = userDetailsService;
-        this.bcryptEncoder = bcryptEncoder;
+        this.bCryptEncoder = bCryptEncoder;
         this.userRepo = userRepo;
         this.roleRepo = roleRepo;
     }
@@ -62,7 +64,11 @@ public class UserService {
 
         final String token = jwtTokenUtil.generateToken(userDetails, user);
 
-        return UserResponseMessage.builder().token(new JwtResponse(token).getToken()).build();
+        UUID refreshToken = UUID.randomUUID();
+
+        refreshTokens.put(user.getUsername(),refreshToken.toString());
+
+        return UserResponseMessage.builder().token(new JwtResponse(token).getToken()).refreshToken(refreshToken.toString()).build();
 
     }
 
@@ -82,17 +88,25 @@ public class UserService {
 
     }
 
-    public UserResponseMessage refreshAndGetAuthenticationToken(HttpServletRequest request) throws ValidationException {
+    public UserResponseMessage refresh(JwtRefreshRequest request) throws ValidationException {
 
-        String authToken = request.getHeader("Authorization");
-        final String token = authToken.substring(7);
-        //long exp = expirationTime(jwtTokenUtil.getExpirationDateFromToken(token)) / 1000;
+        String username = request.getUsername();
+        String refreshToken = request.getRefreshToken();
 
-        if (jwtTokenUtil.canTokenBeRefreshed(token)) {
-            String refreshedToken = jwtTokenUtil.refreshToken(token);
-            return UserResponseMessage.builder().token(new JwtResponse(refreshedToken).getToken()).build();
-        } else {
-            throw new ValidationException("Could not refresh token");
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        User user = userRepo.findByUsername(userDetails.getUsername());
+
+        if (refreshTokens.get(username).equals(refreshToken)) {
+
+            String token = jwtTokenUtil.generateToken(userDetails, user);
+
+            UUID newRefreshToken = UUID.randomUUID();
+            refreshTokens.put(user.getUsername(),newRefreshToken.toString());
+
+            return UserResponseMessage.builder().token(new JwtResponse(token).getToken()).refreshToken(newRefreshToken.toString()).build();
+
+        }else{
+            throw new ValidationException("Invalid Token");
         }
     }
 
@@ -183,7 +197,7 @@ public class UserService {
             newUser.setName(user.getName());
             newUser.setSurname(user.getSurname());
             newUser.setUsername(user.getUsername());
-            newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
+            newUser.setPassword(bCryptEncoder.encode(user.getPassword()));
             newUser.setEmail(user.getEmail());
             newUser.setNumber(user.getNumber());
             newUser.setRole(role);
