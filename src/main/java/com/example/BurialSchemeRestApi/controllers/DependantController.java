@@ -1,7 +1,7 @@
 package com.example.BurialSchemeRestApi.controllers;
 
 import com.example.BurialSchemeRestApi.api.ErrorMessage;
-import com.example.BurialSchemeRestApi.dto.DependantDTO;
+import com.example.BurialSchemeRestApi.dto.DependantRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.services.DependantService;
@@ -37,10 +37,10 @@ public class DependantController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<?> addDependant(@RequestBody DependantDTO dependantDTO){
+	public ResponseEntity<?> addDependant(@RequestBody DependantRequestDTO dependantRequestDTO){
 
 		try {
-			return new ResponseEntity<>(dependantService.addDependant(dependantDTO), HttpStatus.OK);
+			return new ResponseEntity<>(dependantService.addDependant(dependantRequestDTO), HttpStatus.OK);
 		} catch (ValidationException e) {
 			return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
 		}
@@ -85,10 +85,10 @@ public class DependantController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody DependantDTO dependantDTO) {
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody DependantRequestDTO dependantRequestDTO) {
 
 		try {
-			return new ResponseEntity<>(dependantService.update(id,dependantDTO), HttpStatus.OK);
+			return new ResponseEntity<>(dependantService.update(id, dependantRequestDTO), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
 		}

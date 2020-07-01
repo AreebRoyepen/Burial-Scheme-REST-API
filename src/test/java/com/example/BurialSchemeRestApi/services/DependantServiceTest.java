@@ -1,6 +1,6 @@
 package com.example.BurialSchemeRestApi.services;
 
-import com.example.BurialSchemeRestApi.dto.DependantDTO;
+import com.example.BurialSchemeRestApi.dto.DependantRequestDTO;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Member;
 import com.example.BurialSchemeRestApi.models.Relationship;
@@ -11,20 +11,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 //@ExtendWith(SpringExtension.class)
@@ -54,7 +46,7 @@ class DependantServiceTest {
     @Test
     void addDependant() throws ValidationException, JsonProcessingException {
 
-        DependantDTO dependantDTO = DependantDTO.builder().name("Nabeel").member(1).relationship(1).build();
+        DependantRequestDTO dependantRequestDTO = DependantRequestDTO.builder().name("Nabeel").member(1).relationship(1).build();
 
 
 
@@ -67,7 +59,7 @@ class DependantServiceTest {
         ObjectMapper mapper = new ObjectMapper();
         //Staff staff = createStaff();
         // pretty print
-        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dependantService.addDependant(dependantDTO));
+        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dependantService.addDependant(dependantRequestDTO));
         System.out.println(json);
 
 
