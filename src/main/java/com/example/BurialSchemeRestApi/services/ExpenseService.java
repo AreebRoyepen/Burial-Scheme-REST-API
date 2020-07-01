@@ -3,7 +3,7 @@ package com.example.BurialSchemeRestApi.services;
 import com.example.BurialSchemeRestApi.api.Message;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
 import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
-import com.example.BurialSchemeRestApi.dto.ExpenseDTO;
+import com.example.BurialSchemeRestApi.dto.ExpenseRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Expense;
@@ -38,15 +38,15 @@ public class ExpenseService {
         return ResponseMessageList.builder().data(expenseRepo.findAll()).message(ResponseStatus.SUCCESS.name()).build();
     }
 
-    public Message addExpense(ExpenseDTO expenseDTO) throws ValidationException {
+    public Message addExpense(ExpenseRequestDTO expenseRequestDTO) throws ValidationException {
 
         try{
 
-            TransactionType t = transactionTypeRepo.findById(expenseDTO.getType()).orElseThrow();
+            TransactionType t = transactionTypeRepo.findById(expenseRequestDTO.getType()).orElseThrow();
             Expense expense = new Expense();
 
-            expense.setAmount(expenseDTO.getAmount());
-            expense.setReason(expenseDTO.getReason());
+            expense.setAmount(expenseRequestDTO.getAmount());
+            expense.setReason(expenseRequestDTO.getReason());
             expense.setTransactionType(t);
 
             return ResponseMessageObject.builder().data(expenseRepo.save(expense)).message(ResponseStatus.SUCCESS.name()).build();

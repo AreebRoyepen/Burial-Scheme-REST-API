@@ -2,7 +2,7 @@ package com.example.BurialSchemeRestApi.controllers;
 
 import com.example.BurialSchemeRestApi.api.ErrorMessage;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
-import com.example.BurialSchemeRestApi.dto.ClaimDTO;
+import com.example.BurialSchemeRestApi.dto.ClaimRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.services.ClaimService;
@@ -27,20 +27,20 @@ public class ClaimController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> claim(@RequestBody ClaimDTO claimDTO) {
+    public ResponseEntity<?> claim(@RequestBody ClaimRequestDTO claimRequestDTO) {
 
         try {
-            return new ResponseEntity<>(claimService.claim(claimDTO), HttpStatus.OK);
+            return new ResponseEntity<>(claimService.claim(claimRequestDTO), HttpStatus.OK);
         }catch (ValidationException ex){
             return new ResponseEntity<>(new ErrorMessage(ex.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/dependantClaim")
-    public ResponseEntity<?> claimForDep(@RequestBody ClaimDTO claimDTO) {
+    public ResponseEntity<?> claimForDep(@RequestBody ClaimRequestDTO claimRequestDTO) {
 
         try {
-            return new ResponseEntity<>(claimService.claimForDep(claimDTO), HttpStatus.OK);
+            return new ResponseEntity<>(claimService.claimForDep(claimRequestDTO), HttpStatus.OK);
         }catch (ValidationException ex){
             return new ResponseEntity<>(new ErrorMessage(ex.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
         }

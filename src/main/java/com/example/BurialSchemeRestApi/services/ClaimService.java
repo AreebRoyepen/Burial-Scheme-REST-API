@@ -3,7 +3,7 @@ package com.example.BurialSchemeRestApi.services;
 import com.example.BurialSchemeRestApi.api.Message;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
 import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
-import com.example.BurialSchemeRestApi.dto.ClaimDTO;
+import com.example.BurialSchemeRestApi.dto.ClaimRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Claim;
@@ -47,10 +47,10 @@ public class ClaimService {
         return ResponseMessageList.builder().message(ResponseStatus.SUCCESS.name()).data(claimRepo.findAll()).build();
     }
 
-    public Message claim(ClaimDTO claimDTO) throws ValidationException {
+    public Message claim(ClaimRequestDTO claimRequestDTO) throws ValidationException {
 
         try {
-            Member member =memberRepo.findById(claimDTO.getID()).orElseThrow();
+            Member member =memberRepo.findById(claimRequestDTO.getID()).orElseThrow();
 
             if(member.isClaimed()){
                 throw new ValidationException("Cannot claim more than once");
@@ -58,7 +58,7 @@ public class ClaimService {
 
                 try{
 
-                    TransactionType t = transactionTypeRepo.findById(claimDTO.getTransactionType()).orElseThrow();
+                    TransactionType t = transactionTypeRepo.findById(claimRequestDTO.getTransactionType()).orElseThrow();
                     Claim claim = new Claim();
 
                     BigDecimal total = util.getBalanceAtDate(member, new Date(System.currentTimeMillis())).setScale(2, RoundingMode.HALF_EVEN);
@@ -72,16 +72,16 @@ public class ClaimService {
                         throw new ValidationException("Negative Balance");
                     }
 
-                    if(claimDTO.getAmount().compareTo(total) > 0){
+                    if(claimRequestDTO.getAmount().compareTo(total) > 0){
                         throw new ValidationException("Cannot claim more than total premiums paid");
                     }
 
                     if(member.getDependants().isEmpty() || util.allDependantsClaimed(member)){
                         claim.setAmount(total);
                         claim.setClaimDate(new Date(System.currentTimeMillis()));
-                        claim.setBurialPlace(claimDTO.getBurialPlace());
-                        claim.setBuriedDate(claimDTO.getBuriedDate());
-                        claim.setDeathDate(claimDTO.getDeathDate());
+                        claim.setBurialPlace(claimRequestDTO.getBurialPlace());
+                        claim.setBuriedDate(claimRequestDTO.getBuriedDate());
+                        claim.setDeathDate(claimRequestDTO.getDeathDate());
                         claim.setMember(member);
                         claim.setTransactionType(t);
 
@@ -92,11 +92,11 @@ public class ClaimService {
                                 message(ResponseStatus.SUCCESS.name()).data(claimRepo.save(claim)).build();
                     }
 
-                    claim.setAmount(claimDTO.getAmount());
+                    claim.setAmount(claimRequestDTO.getAmount());
                     claim.setClaimDate(new Date(System.currentTimeMillis()));
-                    claim.setBurialPlace(claimDTO.getBurialPlace());
-                    claim.setBuriedDate(claimDTO.getBuriedDate());
-                    claim.setDeathDate(claimDTO.getDeathDate());
+                    claim.setBurialPlace(claimRequestDTO.getBurialPlace());
+                    claim.setBuriedDate(claimRequestDTO.getBuriedDate());
+                    claim.setDeathDate(claimRequestDTO.getDeathDate());
                     claim.setMember(member);
                     claim.setTransactionType(t);
                     
@@ -129,10 +129,10 @@ public class ClaimService {
     }
 
 
-    public ResponseMessageObject claimForDep(ClaimDTO claimDTO) throws ValidationException {
+    public ResponseMessageObject claimForDep(ClaimRequestDTO claimRequestDTO) throws ValidationException {
 
         try{
-            Dependant dep = dependantRepo.findById(claimDTO.getID()).orElseThrow();
+            Dependant dep = dependantRepo.findById(claimRequestDTO.getID()).orElseThrow();
             if(dep.isClaimed()){
                 return ResponseMessageObject.builder().message(ResponseStatus.SUCCESS.name()).info("Cannot claim more than once").build();
             }else{
@@ -140,21 +140,21 @@ public class ClaimService {
                 Member member = memberRepo.findById(dep.getMember().getID()).orElseThrow();
                 try{
 
-                    TransactionType t = transactionTypeRepo.findById(claimDTO.getTransactionType()).orElseThrow();
+                    TransactionType t = transactionTypeRepo.findById(claimRequestDTO.getTransactionType()).orElseThrow();
                     Claim claim = new Claim();
 
                     BigDecimal total = util.getBalanceAtDate(member, new Date(System.currentTimeMillis())).setScale(2, RoundingMode.HALF_EVEN);
 
-                    if(claimDTO.getAmount().compareTo(total) > 0){
+                    if(claimRequestDTO.getAmount().compareTo(total) > 0){
                         throw new ValidationException("Cannot claim more than total premiums paid");
                     }
 
                     if((member.getDependants().size() == 1 || util.lastDependantToClaim(member)) && member.isClaimed()){
                         claim.setAmount(total);
                         claim.setClaimDate(new Date(System.currentTimeMillis()));
-                        claim.setBurialPlace(claimDTO.getBurialPlace());
-                        claim.setBuriedDate(claimDTO.getBuriedDate());
-                        claim.setDeathDate((claimDTO.getDeathDate()));
+                        claim.setBurialPlace(claimRequestDTO.getBurialPlace());
+                        claim.setBuriedDate(claimRequestDTO.getBuriedDate());
+                        claim.setDeathDate((claimRequestDTO.getDeathDate()));
                         claim.setDependant(dep);
                         claim.setTransactionType(t);
 
@@ -164,11 +164,11 @@ public class ClaimService {
                                 info("This is the last claim possible so all funds are paid out").build();
                     }
 
-                    claim.setAmount(claimDTO.getAmount());
+                    claim.setAmount(claimRequestDTO.getAmount());
                     claim.setClaimDate(new Date(System.currentTimeMillis()));
-                    claim.setBurialPlace(claimDTO.getBurialPlace());
-                    claim.setBuriedDate(claimDTO.getBuriedDate());
-                    claim.setDeathDate(claimDTO.getDeathDate());
+                    claim.setBurialPlace(claimRequestDTO.getBurialPlace());
+                    claim.setBuriedDate(claimRequestDTO.getBuriedDate());
+                    claim.setDeathDate(claimRequestDTO.getDeathDate());
                     claim.setDependant(dep);
                     claim.setTransactionType(t);
                     
