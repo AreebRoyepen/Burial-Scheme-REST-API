@@ -32,7 +32,7 @@ public class ReportData {
     }
 
 
-    public List getStatementList(Member m) throws ParseException {
+    public List getStatementTransactionList(Member m) throws ParseException {
 
 
         int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -88,7 +88,7 @@ public class ReportData {
 
     }
 
-    public List getClaimDump (String order){
+    public List getClaimDetails(String order){
 
         List<Claim> claims = new ArrayList<>();
 
