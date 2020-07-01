@@ -12,7 +12,7 @@ import java.sql.Date;
 @Builder(toBuilder = true)
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ClaimDTO {
+public class ClaimRequestDTO {
 
     @NonNull private long ID;
     @NonNull private BigDecimal amount = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_EVEN);
