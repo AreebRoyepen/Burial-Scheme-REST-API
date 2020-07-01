@@ -1,7 +1,7 @@
 package com.example.BurialSchemeRestApi.controllers;
 
 import com.example.BurialSchemeRestApi.api.ErrorMessage;
-import com.example.BurialSchemeRestApi.dto.PremiumDTO;
+import com.example.BurialSchemeRestApi.dto.PremiumRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.services.PremiumService;
@@ -26,10 +26,10 @@ public class PremiumController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> addPremium(@RequestBody PremiumDTO premiumDTO) {
+    public ResponseEntity<?> addPremium(@RequestBody PremiumRequestDTO premiumRequestDTO) {
 
         try {
-            return new ResponseEntity<>(premiumService.addPremium(premiumDTO), HttpStatus.OK);
+            return new ResponseEntity<>(premiumService.addPremium(premiumRequestDTO), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
         }

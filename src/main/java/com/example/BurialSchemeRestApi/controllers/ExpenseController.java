@@ -1,7 +1,7 @@
 package com.example.BurialSchemeRestApi.controllers;
 
 import com.example.BurialSchemeRestApi.api.ErrorMessage;
-import com.example.BurialSchemeRestApi.dto.ExpenseDTO;
+import com.example.BurialSchemeRestApi.dto.ExpenseRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.services.ExpenseService;
@@ -26,10 +26,10 @@ public class ExpenseController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> addExpense(@RequestBody ExpenseDTO expenseDTO) {
+    public ResponseEntity<?> addExpense(@RequestBody ExpenseRequestDTO expenseRequestDTO) {
 
         try {
-            return new ResponseEntity<>(expenseService.addExpense(expenseDTO), HttpStatus.OK);
+            return new ResponseEntity<>(expenseService.addExpense(expenseRequestDTO), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(new ErrorMessage(e.getMessage(), ResponseStatus.FAILURE.name()), HttpStatus.BAD_REQUEST);
         }

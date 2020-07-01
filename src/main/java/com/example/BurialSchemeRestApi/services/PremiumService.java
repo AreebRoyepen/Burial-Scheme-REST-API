@@ -3,7 +3,7 @@ package com.example.BurialSchemeRestApi.services;
 import com.example.BurialSchemeRestApi.api.Message;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
 import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
-import com.example.BurialSchemeRestApi.dto.PremiumDTO;
+import com.example.BurialSchemeRestApi.dto.PremiumRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Premium;
@@ -35,16 +35,16 @@ public class PremiumService {
         return ResponseMessageList.builder().data(premiumRepo.findAll()).message(ResponseStatus.SUCCESS.name()).build();
     }
 
-    public Message addPremium(PremiumDTO premiumDTO) throws ValidationException {
+    public Message addPremium(PremiumRequestDTO premiumRequestDTO) throws ValidationException {
 
         try{
 
-            TransactionType t = transactionTypeRepo.findById(premiumDTO.getType()).orElseThrow();
+            TransactionType t = transactionTypeRepo.findById(premiumRequestDTO.getType()).orElseThrow();
 
             try {
                 Premium premium = new Premium();
-                premium.setAmount(premiumDTO.getAmount());
-                premium.setMember(memberRepo.findById(premiumDTO.getId()).orElseThrow());
+                premium.setAmount(premiumRequestDTO.getAmount());
+                premium.setMember(memberRepo.findById(premiumRequestDTO.getId()).orElseThrow());
                 premium.setTransactionType(t);
 
                 return ResponseMessageObject.builder().data(premiumRepo.save(premium)).message(ResponseStatus.SUCCESS.name()).build();
