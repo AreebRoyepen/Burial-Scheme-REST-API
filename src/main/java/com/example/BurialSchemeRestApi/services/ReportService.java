@@ -44,9 +44,9 @@ public class ReportService {
         try{
             Member m = memberRepo.findById(id).orElseThrow();
 
-            List mergedList = reportData.getStatementList(m);
+            List transactionList = reportData.getStatementTransactionList(m);
 
-            ByteArrayInputStream bis = new ByteArrayInputStream(reportGenerator.generateStatement(m,mergedList));
+            ByteArrayInputStream bis = new ByteArrayInputStream(reportGenerator.generateStatement(m,transactionList));
 
             HttpHeaders headers = getHttpHeaders( "Statement: " + m.getName() , "pdf");
 
@@ -70,7 +70,7 @@ public class ReportService {
         try{
             Member m = memberRepo.findById(id).orElseThrow();
 
-            List mergedList = reportData.getStatementList(m);
+            List mergedList = reportData.getStatementTransactionList(m);
 
             ByteArrayInputStream bis = new ByteArrayInputStream(reportGenerator.generateStatement(m,mergedList));
 
@@ -92,11 +92,11 @@ public class ReportService {
     }
 
 
-    public ReportServiceDTO claimDump(String order) throws ValidationException {
+    public ReportServiceDTO claimDetails(String order) throws ValidationException {
 
         try{
 
-            List<Claim> claims = reportData.getClaimDump(order);
+            List<Claim> claims = reportData.getClaimDetails(order);
 
             // To convert bytes to an InputStream, use a ByteArrayInputStream
             ByteArrayInputStream bis = new ByteArrayInputStream(reportGenerator.generateClaimCSV(claims));
@@ -114,11 +114,11 @@ public class ReportService {
 
     }
 
-    public ResponseMessageObject emailClaimDump(String order, String email) throws ValidationException {
+    public ResponseMessageObject emailClaimDetails(String order, String email) throws ValidationException {
 
         try{
 
-            List<Claim> claims = reportData.getClaimDump(order);
+            List<Claim> claims = reportData.getClaimDetails(order);
 
             // To convert bytes to an InputStream, use a ByteArrayInputStream
             ByteArrayInputStream bis = new ByteArrayInputStream(reportGenerator.generateClaimCSV(claims));
@@ -136,7 +136,7 @@ public class ReportService {
 
     }
 
-    public ReportServiceDTO memberDump() throws ValidationException {
+    public ReportServiceDTO memberDetails() throws ValidationException {
 
         try{
             List<Member> members = memberRepo.findAll();
@@ -158,7 +158,7 @@ public class ReportService {
 
     }
 
-    public ResponseMessageObject emailMemberDump(String email) throws ValidationException {
+    public ResponseMessageObject emailMemberDetails(String email) throws ValidationException {
         try{
             List<Member> members = memberRepo.findAll();
 

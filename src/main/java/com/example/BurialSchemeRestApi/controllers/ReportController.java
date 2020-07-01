@@ -39,18 +39,18 @@ public class ReportController {
 
     }
 
-    @GetMapping({"/deaths", "/deaths/{email}"})
-    public ResponseEntity<?> claimDump(@PathVariable(required = false) String order,
-                                       @PathVariable(required = false) String email){
+    @GetMapping({"/claims", "/claims/{email}"})
+    public ResponseEntity<?> claimDetails(@PathVariable(required = false) String order,
+                                          @PathVariable(required = false) String email){
 
         try {
             if (email == null){
-                ReportServiceDTO m = reportService.claimDump(order);
+                ReportServiceDTO m = reportService.claimDetails(order);
 
                 return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
                         .body(new InputStreamResource(m.getInputStream()));
             }else{
-                return new ResponseEntity<>(reportService.emailClaimDump(order, email), HttpStatus.OK);
+                return new ResponseEntity<>(reportService.emailClaimDetails(order, email), HttpStatus.OK);
             }
 
         } catch (ValidationException e) {
@@ -59,18 +59,18 @@ public class ReportController {
 
     }
 
-    @GetMapping({"/memberDump", "/memberDump/{email}"})
-    public ResponseEntity<?> memberDump(@PathVariable(required = false) String email){
+    @GetMapping({"/memberDetails", "/memberDetails/{email}"})
+    public ResponseEntity<?> memberDetails(@PathVariable(required = false) String email){
 
         try {
             if(email == null){
-                ReportServiceDTO m = reportService.memberDump();
+                ReportServiceDTO m = reportService.memberDetails();
 
                 return ResponseEntity.ok().headers(m.getHttpHeaders()).contentType(m.getContentType())
                         .body(new InputStreamResource(m.getInputStream()));
 
             }else{
-                return new ResponseEntity<>(reportService.emailMemberDump(email), HttpStatus.OK);
+                return new ResponseEntity<>(reportService.emailMemberDetails(email), HttpStatus.OK);
             }
 
         } catch (ValidationException e) {
