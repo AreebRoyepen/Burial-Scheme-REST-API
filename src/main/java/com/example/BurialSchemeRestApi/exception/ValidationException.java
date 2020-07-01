@@ -1,6 +1,5 @@
 package com.example.BurialSchemeRestApi.exception;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
