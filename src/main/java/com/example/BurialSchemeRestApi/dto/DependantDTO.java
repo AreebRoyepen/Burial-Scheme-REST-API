@@ -1,5 +1,6 @@
 package com.example.BurialSchemeRestApi.dto;
 
+import com.example.BurialSchemeRestApi.models.Relationship;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -12,6 +13,7 @@ import java.sql.Date;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DependantDTO {
 
+    Long id ;
     String name ;
     String surname ;
     String IDNumber ;
@@ -19,6 +21,6 @@ public class DependantDTO {
     Date DOE;
     boolean child;
     @NonNull long member;
-    @NonNull long relationship;
+    @NonNull Relationship relationship;
 
 }

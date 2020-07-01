@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Builder(toBuilder = true)
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PremiumDTO {
+public class PremiumRequestDTO {
     @NonNull BigDecimal amount;
     @NonNull Long id;
     @NonNull Long type;
