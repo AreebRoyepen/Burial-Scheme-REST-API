@@ -1,8 +1,6 @@
 package com.example.BurialSchemeRestApi.models;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.example.BurialSchemeRestApi.dto.DependantDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -38,8 +36,16 @@ public class Member {
 	private boolean claimed = false;
 	private boolean paidJoiningFee;
 
-	@JsonIgnore
 	@OneToMany(mappedBy="member")
 	private List<Dependant> dependants;
 
+	public List<Dependant> getDependants() {
+
+		List list = dependants.stream().map(e ->
+				DependantDTO.builder().id(e.getID()).child(e.isChild()).DOB(e.getDOB()).DOE(e.getDOE()).IDNumber(e.getIDNumber())
+				.member(e.getMember().getID()).name(e.getName()).surname(e.getSurname()).relationship(e.getRelationship()).build())
+				.collect(Collectors.toList());
+
+		return list;
+	}
 }

@@ -3,7 +3,7 @@ package com.example.BurialSchemeRestApi.services;
 import com.example.BurialSchemeRestApi.api.Message;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
 import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
-import com.example.BurialSchemeRestApi.dto.DependantDTO;
+import com.example.BurialSchemeRestApi.dto.DependantRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Dependant;
@@ -54,21 +54,21 @@ public class DependantService {
 
     }
 
-    public Message addDependant(DependantDTO dependantDTO) throws ValidationException {
+    public Message addDependant(DependantRequestDTO dependantRequestDTO) throws ValidationException {
 
         try{
-            Member m = memberRepo.findById(dependantDTO.getMember()).orElseThrow();
+            Member m = memberRepo.findById(dependantRequestDTO.getMember()).orElseThrow();
             try{
-                Relationship r = relationshipRepo.findById(dependantDTO.getRelationship()).orElseThrow();
+                Relationship r = relationshipRepo.findById(dependantRequestDTO.getRelationship()).orElseThrow();
 
                 Dependant dependant = new Dependant();
                 dependant.setRelationship(r);
                 dependant.setMember(m);
-                dependant.setDOB(dependantDTO.getDOB());
-                dependant.setChild(dependantDTO.isChild());
-                dependant.setIDNumber(dependantDTO.getIDNumber());
-                dependant.setName(dependantDTO.getName());
-                dependant.setSurname(dependantDTO.getSurname());
+                dependant.setDOB(dependantRequestDTO.getDOB());
+                dependant.setChild(dependantRequestDTO.isChild());
+                dependant.setIDNumber(dependantRequestDTO.getIDNumber());
+                dependant.setName(dependantRequestDTO.getName());
+                dependant.setSurname(dependantRequestDTO.getSurname());
 
                 List<Dependant> dependants = dependantRepo.findAll();
 
@@ -136,24 +136,24 @@ public class DependantService {
         }
     }
 
-    public Message update(Long id, DependantDTO dependantDTO) throws ValidationException {
+    public Message update(Long id, DependantRequestDTO dependantRequestDTO) throws ValidationException {
 
         try {
             Dependant updateDep = dependantRepo.findById(id).orElseThrow();
 
             try{
 
-                if(dependantDTO.getMember() != 0L) updateDep.setMember(memberRepo.findById(dependantDTO.getMember()).orElseThrow());
-                if(dependantDTO.getName() != null) updateDep.setName(dependantDTO.getName());
-                if(dependantDTO.getSurname() != null) updateDep.setSurname(dependantDTO.getSurname());
-                if(dependantDTO.getIDNumber() != null) updateDep.setIDNumber(dependantDTO.getIDNumber());
-                if(dependantDTO.getDOB()!=null) updateDep.setDOB(dependantDTO.getDOB());
-                if(dependantDTO.getDOE()!= null)updateDep.setDOE(dependantDTO.getDOE());
-                updateDep.setChild(dependantDTO.isChild());
+                if(dependantRequestDTO.getMember() != 0L) updateDep.setMember(memberRepo.findById(dependantRequestDTO.getMember()).orElseThrow());
+                if(dependantRequestDTO.getName() != null) updateDep.setName(dependantRequestDTO.getName());
+                if(dependantRequestDTO.getSurname() != null) updateDep.setSurname(dependantRequestDTO.getSurname());
+                if(dependantRequestDTO.getIDNumber() != null) updateDep.setIDNumber(dependantRequestDTO.getIDNumber());
+                if(dependantRequestDTO.getDOB()!=null) updateDep.setDOB(dependantRequestDTO.getDOB());
+                if(dependantRequestDTO.getDOE()!= null)updateDep.setDOE(dependantRequestDTO.getDOE());
+                updateDep.setChild(dependantRequestDTO.isChild());
 
                 try{
-                    if(dependantDTO.getRelationship() != 0)
-                        updateDep.setRelationship(relationshipRepo.findById(dependantDTO.getRelationship()).orElseThrow());
+                    if(dependantRequestDTO.getRelationship() != 0)
+                        updateDep.setRelationship(relationshipRepo.findById(dependantRequestDTO.getRelationship()).orElseThrow());
 
                     return ResponseMessageObject.builder().data(dependantRepo.save(updateDep)).message(ResponseStatus.SUCCESS.name()).build();
 

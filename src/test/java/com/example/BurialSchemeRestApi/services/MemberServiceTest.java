@@ -1,10 +1,8 @@
 package com.example.BurialSchemeRestApi.services;
 
-import com.example.BurialSchemeRestApi.dto.DependantDTO;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Dependant;
 import com.example.BurialSchemeRestApi.models.Member;
-import com.example.BurialSchemeRestApi.models.Relationship;
 import com.example.BurialSchemeRestApi.repositories.DependantRepo;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 import com.example.BurialSchemeRestApi.repositories.RelationshipRepo;
@@ -17,11 +15,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 class MemberServiceTest {
