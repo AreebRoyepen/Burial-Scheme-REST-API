@@ -9,6 +9,7 @@ import com.example.BurialSchemeRestApi.models.Member;
 import com.example.BurialSchemeRestApi.reports.ReportData;
 import com.example.BurialSchemeRestApi.reports.ReportGenerator;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -21,9 +22,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@Log4j2
 public class ReportService {
-
-    Logger logger = LoggerFactory.getLogger(ReportService.class);
 
     ReportData reportData;
     MemberRepo memberRepo;
@@ -56,7 +56,7 @@ public class ReportService {
         }catch (NoSuchElementException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
-            logger.error("No such Member");
+            log.error("No such Member");
             throw new ValidationException("No such Member");
         }catch(Exception ex){
             ex.printStackTrace();
@@ -82,7 +82,7 @@ public class ReportService {
         }catch (NoSuchElementException e){
             System.out.println(e.getMessage());
             e.printStackTrace();
-            logger.error("No such Member");
+            log.error("No such Member");
             throw new ValidationException("No such Member");
         }catch(Exception ex){
             ex.printStackTrace();
@@ -108,7 +108,7 @@ public class ReportService {
 
         }catch (Exception e){
             e.printStackTrace();
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             throw new ValidationException(e.getMessage());
         }
 
@@ -130,7 +130,7 @@ public class ReportService {
 
         }catch (Exception e){
             e.printStackTrace();
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             throw new ValidationException(e.getMessage());
         }
 
@@ -152,7 +152,7 @@ public class ReportService {
         } catch (Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             throw new ValidationException(e.getMessage());
         }
 
@@ -173,7 +173,7 @@ public class ReportService {
         } catch (Exception e){
             System.out.println(e.getMessage());
             e.printStackTrace();
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             throw new ValidationException(e.getMessage());
         }
     }

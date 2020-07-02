@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class RelationshipTypeService {
 
-    Logger logger = LoggerFactory.getLogger(RelationshipTypeService.class);
     RelationshipRepo relationshipRepo;
 
     public RelationshipTypeService(RelationshipRepo relationshipRepo) {

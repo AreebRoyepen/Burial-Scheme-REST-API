@@ -9,6 +9,7 @@ import com.example.BurialSchemeRestApi.models.Income;
 import com.example.BurialSchemeRestApi.models.TransactionType;
 import com.example.BurialSchemeRestApi.repositories.IncomeRepo;
 import com.example.BurialSchemeRestApi.repositories.TransactionTypeRepo;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,8 @@ import java.math.RoundingMode;
 import java.util.NoSuchElementException;
 
 @Service
+@Log4j2
 public class IncomeService {
-
-    Logger logger = LoggerFactory.getLogger(IncomeService.class);
 
     IncomeRepo incomeRepo;
     TransactionTypeRepo transactionTypeRepo;
@@ -50,7 +50,7 @@ public class IncomeService {
             return ResponseMessageObject.builder().data(incomeRepo.save(income)).message(ResponseStatus.SUCCESS.name()).build();
         }catch (NoSuchElementException ex){
 
-            logger.error("No such transaction type");
+            log.error("No such transaction type");
             throw new ValidationException("No such transaction type");
 
         }catch(Exception e){

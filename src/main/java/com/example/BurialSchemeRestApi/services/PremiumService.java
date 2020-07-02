@@ -11,15 +11,15 @@ import com.example.BurialSchemeRestApi.models.TransactionType;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 import com.example.BurialSchemeRestApi.repositories.PremiumRepo;
 import com.example.BurialSchemeRestApi.repositories.TransactionTypeRepo;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 
 @Service
+@Log4j2
 public class PremiumService {
-
-    Logger logger = LoggerFactory.getLogger(PremiumService.class);
 
     PremiumRepo premiumRepo;
     MemberRepo memberRepo;
@@ -50,7 +50,7 @@ public class PremiumService {
                 return ResponseMessageObject.builder().data(premiumRepo.save(premium)).message(ResponseStatus.SUCCESS.name()).build();
 
             }catch (NoSuchElementException ex){
-                logger.error("No such Member");
+                log.error("No such Member");
                 throw new ValidationException("No such Member");
             }catch(Exception ex){
                 ex.printStackTrace();
@@ -60,7 +60,7 @@ public class PremiumService {
 
         }catch (NoSuchElementException ex){
 
-            logger.error("No such transaction type");
+            log.error("No such transaction type");
             throw new ValidationException("No such transaction type");
 
         }catch(Exception ex){
