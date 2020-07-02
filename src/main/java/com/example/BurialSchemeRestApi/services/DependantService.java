@@ -12,16 +12,14 @@ import com.example.BurialSchemeRestApi.models.Relationship;
 import com.example.BurialSchemeRestApi.repositories.DependantRepo;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 import com.example.BurialSchemeRestApi.repositories.RelationshipRepo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Log4j2
 @Service
 public class DependantService {
-
-    Logger logger = LoggerFactory.getLogger(DependantService.class);
 
     MemberRepo memberRepo;
     DependantRepo dependantRepo;
@@ -45,10 +43,10 @@ public class DependantService {
             return ResponseMessageObject.builder().data(dep.getMember()).message(ResponseStatus.SUCCESS.name()).build();
 
         }catch (NoSuchElementException ex){
-            logger.error("No such dependant");
+            log.error("No such dependant");
             throw new ValidationException("No such dependant");
         }catch (Exception ex){
-            logger.error(ex.getMessage());
+            log.error(ex.getMessage());
             throw new ValidationException(ex.getMessage());
         }
 
@@ -84,14 +82,14 @@ public class DependantService {
 
                         }
                     }
-                }
+                }     
                 dependantRepo.save(dependant);
 
                 return ResponseMessageObject.builder().data(dependant).message(ResponseStatus.SUCCESS.name()).build();
 
 
             }catch (NoSuchElementException ex){
-                logger.error("No such relationship");
+                log.error("No such relationship");
                 throw new ValidationException("No such relationship");
             }catch(Exception ex){
                 ex.printStackTrace();
@@ -99,7 +97,7 @@ public class DependantService {
             }
 
         }catch (NoSuchElementException ex){
-            logger.error("No such Member");
+            log.error("No such Member");
             throw new ValidationException("No such Member");
         }catch(Exception ex){
             ex.printStackTrace();
@@ -128,7 +126,7 @@ public class DependantService {
             return ResponseMessageList.builder().message(ResponseStatus.SUCCESS.name()).build();
 
         }catch(NoSuchElementException e) {
-            logger.error("Trying to delete a dependant that does not exist");
+            log.error("Trying to delete a dependant that does not exist");
             throw new ValidationException("No such Dependant");
         }catch(Exception ex){
             ex.printStackTrace();
@@ -158,7 +156,7 @@ public class DependantService {
                     return ResponseMessageObject.builder().data(dependantRepo.save(updateDep)).message(ResponseStatus.SUCCESS.name()).build();
 
                 }catch (NoSuchElementException ex){
-                    logger.error("No such relationship");
+                    log.error("No such relationship");
                     throw new ValidationException("No such relationship");
                 }
                 catch(Exception ex){
@@ -167,7 +165,7 @@ public class DependantService {
                 }
 
             }catch (NoSuchElementException ex){
-                logger.error("No such Member");
+                log.error("No such Member");
                 throw new ValidationException("No such Member");
             }catch(Exception ex){
                 ex.printStackTrace();
@@ -176,7 +174,7 @@ public class DependantService {
 
         }catch(NoSuchElementException e) {
 
-            logger.error("Trying to update a dependant that does not exist");
+            log.error("Trying to update a dependant that does not exist");
             throw new ValidationException("No such dependant");
 
         }catch(Exception ex){

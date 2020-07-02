@@ -12,6 +12,7 @@ import com.example.BurialSchemeRestApi.models.Member;
 import com.example.BurialSchemeRestApi.models.TransactionType;
 import com.example.BurialSchemeRestApi.repositories.*;
 import com.example.BurialSchemeRestApi.util.UtilClass;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,8 @@ import java.sql.Date;
 import java.util.NoSuchElementException;
 
 @Service
+@Log4j2
 public class ClaimService {
-
-    Logger logger = LoggerFactory.getLogger(ClaimService.class);
 
     MemberRepo memberRepo;
     DependantRepo dependantRepo;
@@ -68,7 +68,7 @@ public class ClaimService {
                     }
 
                     if(total.compareTo(BigDecimal.ZERO) < 0){
-                        logger.error("member " + member.getID()+ " has negative balance");
+                        log.error("member " + member.getID()+ " has negative balance");
                         throw new ValidationException("Negative Balance");
                     }
 
@@ -106,7 +106,7 @@ public class ClaimService {
 
                 }catch (NoSuchElementException ex){
 
-                    logger.error("No such transaction type");
+                    log.error("No such transaction type");
                     throw new ValidationException("No such transaction type");
 
                 }catch (Exception ex){
@@ -118,7 +118,7 @@ public class ClaimService {
 
         }catch(NoSuchElementException e) {
 
-            logger.error("Trying to claim from a member that does not exist");
+            log.error("Trying to claim from a member that does not exist");
             throw new ValidationException("No such member");
 
         }
@@ -178,7 +178,7 @@ public class ClaimService {
 
                 }catch (NoSuchElementException ex){
 
-                    logger.error("No such transaction type");
+                    log.error("No such transaction type");
                     throw new ValidationException("No such transaction type");
 
                 }catch (Exception ex){
@@ -189,7 +189,7 @@ public class ClaimService {
             }
 
         }catch (NoSuchElementException ex){
-            logger.error("Trying to claim from a dependant that does not exist");
+            log.error("Trying to claim from a dependant that does not exist");
             throw new ValidationException("No such dependant");
 
         }catch (Exception ex){

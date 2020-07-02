@@ -15,6 +15,7 @@ import com.example.BurialSchemeRestApi.models.Role;
 import com.example.BurialSchemeRestApi.models.User;
 import com.example.BurialSchemeRestApi.repositories.RoleRepo;
 import com.example.BurialSchemeRestApi.repositories.UserRepo;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,9 +30,8 @@ import java.util.*;
 
 
 @Service
+@Log4j2
 public class UserService {
-
-    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private HashMap<String, String> refreshTokens = new HashMap<>();
 
@@ -133,7 +133,7 @@ public class UserService {
                 return ResponseMessageObject.builder().message(ResponseStatus.SUCCESS.name()).data(userRepo.save(theUser)).build();
 
             }catch (NoSuchElementException e) {
-                logger.error("No such role");
+                log.error("No such role");
                 throw new ValidationException("No such Role");
             }catch(Exception ex){
                 ex.printStackTrace();
@@ -142,7 +142,7 @@ public class UserService {
 
         }catch(NoSuchElementException e) {
 
-            logger.error("Trying to update a user that does not exist");
+            log.error("Trying to update a user that does not exist");
             throw new ValidationException("No such User");
 
         }catch(Exception ex){
@@ -164,7 +164,7 @@ public class UserService {
 
                 return ResponseMessageObject.builder().message(ResponseStatus.SUCCESS.name()).build();
             }catch (NoSuchElementException e) {
-                logger.error("No such user");
+                log.error("No such user");
                 throw new ValidationException("No such user");
             }catch(Exception ex){
                 ex.printStackTrace();
@@ -172,7 +172,7 @@ public class UserService {
             }
 
         } catch (Exception e) {
-            logger.error("Bad request body when changing user status");
+            log.error("Bad request body when changing user status");
             throw new ValidationException("Bad Request Body");
         }
 
@@ -205,7 +205,7 @@ public class UserService {
             return userRepo.save(newUser);
 
         }catch (Exception e) {
-            logger.error("No such role");
+            log.error("No such role");
             return null;
         }
 
@@ -217,10 +217,10 @@ public class UserService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         } catch (DisabledException e) {
-            logger.error("user diabled");
+            log.error("user diabled");
             throw new Exception("USER_DISABLED", e);
         } catch (BadCredentialsException e) {
-            logger.error("User credentials invalid");
+            log.error("User credentials invalid");
             throw new Exception("INVALID_CREDENTIALS", e);
         }catch(AuthenticationException e) {
             throw new Exception(e.getMessage());

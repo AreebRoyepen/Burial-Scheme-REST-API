@@ -8,6 +8,7 @@ import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Member;
 import com.example.BurialSchemeRestApi.repositories.DependantRepo;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 @Service
+@Log4j2
 public class MemberService {
-
-    Logger logger = LoggerFactory.getLogger(MemberService.class);
 
     MemberRepo memberRepo;
     DependantRepo dependantRepo;
@@ -40,7 +40,7 @@ public class MemberService {
             return ResponseMessageList.builder().data(member.getDependants()).message(ResponseStatus.SUCCESS.name()).build();
 
         }catch (Exception ex){
-            logger.error("No such Member");
+            log.error("No such Member");
             throw new ValidationException("No such Member");
         }
 
@@ -118,7 +118,7 @@ public class MemberService {
 
         }catch(NoSuchElementException e) {
 
-            logger.error("Trying to update a member that does not exist");
+            log.error("Trying to update a member that does not exist");
             throw new ValidationException("No such member");
 
         }catch(Exception ex){

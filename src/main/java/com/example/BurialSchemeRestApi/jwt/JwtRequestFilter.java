@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.BurialSchemeRestApi.services.JwtUserDetailsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,10 +19,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.ExpiredJwtException;
 
 @Component
+@Log4j2
 public class JwtRequestFilter extends OncePerRequestFilter {
-	
-	Logger logger = LoggerFactory.getLogger(JwtRequestFilter.class);
-	
+		
 	private JwtUserDetailsService jwtUserDetailsService;
 	private JwtTokenUtil jwtTokenUtil;
 
@@ -47,18 +44,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			try {
 				username = jwtTokenUtil.getUsernameFromToken(jwtToken);
 			} catch (IllegalArgumentException e) {
-				logger.error("Unable to get JWT Token");
+				log.error("Unable to get JWT Token");
 			} catch (ExpiredJwtException e) {
-				logger.error("JWT Token has expired");
+				log.error("JWT Token has expired");
 			}
 		} else if (request.getRequestURI().contains("register")) {
-			logger.info("User Registering");
+			log.info("User Registering");
 		} else if (request.getRequestURI().contains("login")) {
-			logger.info("User Logging In");
+			log.info("User Logging In");
 		} else if (request.getRequestURI().contains("refresh")) {
-			logger.info("User refreshing token");
+			log.info("User refreshing token");
 		} else {
-			logger.warn("JWT Token does not begin with Bearer String");
+			log.warn("JWT Token does not begin with Bearer String");
 		}
 		
 		// Once we get the token validate it.

@@ -12,14 +12,15 @@ import com.example.BurialSchemeRestApi.repositories.DependantRepo;
 import com.example.BurialSchemeRestApi.repositories.ExpenseRepo;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 import com.example.BurialSchemeRestApi.repositories.TransactionTypeRepo;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 
 @Service
+@Log4j2
 public class ExpenseService {
-    Logger logger = LoggerFactory.getLogger(ExpenseService.class);
 
     MemberRepo memberRepo;
     DependantRepo dependantRepo;
@@ -53,7 +54,7 @@ public class ExpenseService {
 
         }catch (NoSuchElementException ex){
 
-            logger.error("No such transaction type");
+            log.error("No such transaction type");
             throw new ValidationException("No such transaction type");
 
         }catch(Exception ex){
