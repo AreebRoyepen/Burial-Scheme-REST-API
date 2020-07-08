@@ -1,6 +1,7 @@
 package com.example.BurialSchemeRestApi.repositories;
 
 import com.example.BurialSchemeRestApi.models.Premium;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@Disabled
 class PremiumRepoTest {
 
     @Autowired
