@@ -14,23 +14,17 @@ insert into relationship(name) values ("parent");
 insert into relationship(name) values ("spouse");
 insert into relationship(name) values ("other");
 
+##### BELOW FOR TESTING #####
 insert into member(name,surname,email,IDNumber,address, area,home_Number,cell_Number,work_Number,DOB, doe,claimed,paid_joining_fee) values
-                ("Areeb","Royepen","a@g.c","1111111111111","16 Smartt Rd","Goodwood","1111111111","1111111111","1111111111","1998-04-02","2020-01-01", false, true);
-
-insert into member(name,surname,email,IDNumber,address, area,home_Number,cell_Number,work_Number,DOB, doe,claimed,paid_joining_fee) values
-("Rifaat","Royepen","a@g.c","1111111111111","16 Smartt Rd","Goodwood","1111111111","1111111111","1111111111","1998-04-02","2020-01-01", false, true);
+("Rifaat","Royepen","rroyepen@gmail.com","6901245174084","16 Smartt Rd","Goodwood","0215917721","0711111111","0211111111","1969-01-24","2015-01-01", false, true);
 
 insert into member(name,surname,email,IDNumber,address, area,home_Number,cell_Number,work_Number,DOB, doe,claimed,paid_joining_fee) values
-("Zerina","Royepen","a@g.c","1111111111111","16 Smartt Rd","Goodwood","1111111111","1111111111","1111111111","1998-04-02","2020-01-01", false, false);
+                ("Areeb","Royepen","areeb.royepen@gmail.com","9804025234085","16 Smartt Rd","Goodwood","0215917721","0111111111","0211111111","1998-04-02","2020-01-01", false, true);
 
-insert into member(name,surname,email,IDNumber,address, area,home_Number,cell_Number,work_Number,DOB, doe,claimed,paid_joining_fee) values
-("Nabeel","Royepen","a@g.c","1111111111111","16 Smartt Rd","Goodwood","1111111111","1111111111","1111111111","1998-04-02","2020-01-01", false, false);
+INSERT INTO dependant(name, surname, IDNumber,memberID, relationshipID, child,claimed,dob)  values
+            ("Nabeel", "Royepen","11158711111",1,1, true, false,"2001-08-04");
 
-INSERT INTO dependant(name, surname, IDNumber,memberID, relationshipID, child,claimed,dob)  values ("Nabeel", "Roy","11111111111",1,1, true, false,"1998-04-02");
-# insert into premium(amount, date, transaction_typeid,memberid) values (100,"2020-04-02",1,1);
-#
-# insert into claim(amount, memberid, transaction_typeid,burial_place,claim_date) values (100, 1, 2,"Goodwood","2020-05-05");
-
-
+INSERT INTO dependant(name, surname, IDNumber,memberID, relationshipID, child,claimed,dob)  values
+                    ("Zerina", "Royepen","93158711111",1,3, false, false,"1971-04-24");
 
 
