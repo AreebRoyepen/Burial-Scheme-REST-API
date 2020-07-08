@@ -39,7 +39,7 @@ public class Member {
 	@OneToMany(mappedBy="member")
 	private List<Dependant> dependants;
 
-	public List<Dependant> getDependants() {
+	public List<DependantDTO> getDependants() {
 
 		List list = dependants.stream().map(e ->
 				DependantDTO.builder().id(e.getID()).child(e.isChild()).DOB(e.getDOB()).DOE(e.getDOE()).IDNumber(e.getIDNumber())
