@@ -26,8 +26,7 @@ public class MemberController {
 	}
 
 	@GetMapping()
-	public ResponseEntity<ResponseMessageList> allMembers() throws InterruptedException {
-		TimeUnit.SECONDS.sleep(2);
+	public ResponseEntity<ResponseMessageList> allMembers() {
 		return new ResponseEntity<>(memberService.allMembers(), HttpStatus.OK);
 	}
 
