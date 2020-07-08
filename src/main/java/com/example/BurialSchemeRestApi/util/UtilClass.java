@@ -1,5 +1,6 @@
 package com.example.BurialSchemeRestApi.util;
 
+import com.example.BurialSchemeRestApi.dto.DependantDTO;
 import com.example.BurialSchemeRestApi.models.*;
 import com.example.BurialSchemeRestApi.repositories.*;
 import org.springframework.stereotype.Component;
@@ -20,13 +21,15 @@ public class UtilClass {
     MemberRepo memberRepo;
     IncomeRepo incomeRepo;
     ExpenseRepo expenseRepo;
+    DependantRepo dependantRepo;
 
-    public UtilClass(PremiumRepo premiumRepo, ClaimRepo claimRepo, MemberRepo memberRepo, IncomeRepo incomeRepo, ExpenseRepo expenseRepo) {
+    public UtilClass(PremiumRepo premiumRepo, ClaimRepo claimRepo, MemberRepo memberRepo, IncomeRepo incomeRepo, ExpenseRepo expenseRepo, DependantRepo dependantRepo) {
         this.premiumRepo = premiumRepo;
         this.claimRepo = claimRepo;
         this.memberRepo = memberRepo;
         this.incomeRepo = incomeRepo;
         this.expenseRepo = expenseRepo;
+        this.dependantRepo = dependantRepo;
     }
 
     public BigDecimal getBalanceAtDate(Member member, Date date){
@@ -47,11 +50,14 @@ public class UtilClass {
     }
 
     public boolean allDependantsClaimed(Member member){
-        List<Dependant> dependantList = member.getDependants();
+        List<DependantDTO> dependantList = member.getDependants();
 
         int x = 0;
-        for (Dependant dependant: dependantList) {
-            if(dependant.isClaimed())
+        for (DependantDTO dependant: dependantList) {
+
+            Dependant d  = dependantRepo.findById(dependant.getId()).orElseThrow();
+
+            if(d.isClaimed())
                 x ++;
         }
         if(x == dependantList.size()) {
@@ -63,11 +69,12 @@ public class UtilClass {
     }
 
     public boolean lastDependantToClaim(Member member){
-        List<Dependant> dependantList = member.getDependants();
+        List<DependantDTO> dependantList = member.getDependants();
 
         int x = 0;
-        for (Dependant dependant: dependantList) {
-            if(dependant.isClaimed())
+        for (DependantDTO dependant: dependantList) {
+            Dependant d  = dependantRepo.findById(dependant.getId()).orElseThrow();
+            if(d.isClaimed())
                 x ++;
         }
         if(x == dependantList.size() -1) {
