@@ -3,6 +3,7 @@ package com.example.BurialSchemeRestApi.services;
 import com.example.BurialSchemeRestApi.api.Message;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
 import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
+import com.example.BurialSchemeRestApi.dto.MemberRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Member;
@@ -46,7 +47,7 @@ public class MemberService {
 
     }
 
-    public Message addMember(Member m) throws ValidationException {
+    public Message addMember(MemberRequestDTO m) throws ValidationException {
 
         List<Member> members = memberRepo.findAll();
 
@@ -66,7 +67,11 @@ public class MemberService {
             }
 
         }
-        return ResponseMessageObject.builder().data(memberRepo.save(m)).message(ResponseStatus.SUCCESS.name()).build();
+        Member member = Member.builder().name(m.getName()).surname(m.getSurname()).IDNumber(m.getIDNumber()).address(m.getAddress())
+                .area(m.getArea()).postalCode(m.getPostalCode()).cellNumber(m.getCellNumber()).homeNumber(m.getHomeNumber())
+                .workNumber(m.getWorkNumber()).email(m.getEmail()).DOB(m.getDOB()).DOE(m.getDOE()).paidJoiningFee(m.isPaidJoiningFee()).build();
+        memberRepo.save(member);
+        return ResponseMessageObject.builder().message(ResponseStatus.SUCCESS.name()).build();
 
     }
 
@@ -96,7 +101,7 @@ public class MemberService {
         }
     }
 
-    public Message update(Long id, Member p) throws ValidationException {
+    public Message update(Long id, MemberRequestDTO p) throws ValidationException {
 
         try {
             Member member =memberRepo.findById(id).orElseThrow();

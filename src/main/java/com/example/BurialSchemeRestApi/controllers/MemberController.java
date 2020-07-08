@@ -2,6 +2,7 @@ package com.example.BurialSchemeRestApi.controllers;
 
 import com.example.BurialSchemeRestApi.api.ErrorMessage;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
+import com.example.BurialSchemeRestApi.dto.MemberRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
 import com.example.BurialSchemeRestApi.models.Member;
@@ -26,7 +27,7 @@ public class MemberController {
 
 	@GetMapping()
 	public ResponseEntity<ResponseMessageList> allMembers() throws InterruptedException {
-		TimeUnit.SECONDS.sleep(3);
+		TimeUnit.SECONDS.sleep(2);
 		return new ResponseEntity<>(memberService.allMembers(), HttpStatus.OK);
 	}
 
@@ -42,7 +43,7 @@ public class MemberController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<?> addMember(@RequestBody Member m){
+	public ResponseEntity<?> addMember(@RequestBody MemberRequestDTO m){
 		
 		try{
 			return new ResponseEntity<>(memberService.addMember(m),HttpStatus.OK);
@@ -89,7 +90,7 @@ public class MemberController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Member p) {
+	public ResponseEntity<?> update(@PathVariable Long id, @RequestBody MemberRequestDTO p) {
 
 		try{
 			return new ResponseEntity<>(memberService.update(id, p),HttpStatus.OK);
