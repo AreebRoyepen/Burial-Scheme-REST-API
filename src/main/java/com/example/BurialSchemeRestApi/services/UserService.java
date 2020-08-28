@@ -16,8 +16,6 @@ import com.example.BurialSchemeRestApi.models.User;
 import com.example.BurialSchemeRestApi.repositories.RoleRepo;
 import com.example.BurialSchemeRestApi.repositories.UserRepo;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -177,17 +175,17 @@ public class UserService {
         }
 
     }
-
-    private long expirationTime(Date date) {
-
-        Calendar calender = Calendar.getInstance();
-        calender.setTime(date);
-
-        Calendar cal2 = Calendar.getInstance();
-
-        return (calender.getTimeInMillis() - cal2.getTimeInMillis());
-
-    }
+//
+//    private long expirationTime(Date date) {
+//
+//        Calendar calender = Calendar.getInstance();
+//        calender.setTime(date);
+//
+//        Calendar cal2 = Calendar.getInstance();
+//
+//        return (calender.getTimeInMillis() - cal2.getTimeInMillis());
+//
+//    }
 
     private User save(UserDTO user) {
         User newUser = new User();

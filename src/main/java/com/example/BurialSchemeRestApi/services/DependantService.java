@@ -6,13 +6,16 @@ import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
 import com.example.BurialSchemeRestApi.dto.DependantRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
+import com.example.BurialSchemeRestApi.models.Audit;
 import com.example.BurialSchemeRestApi.models.Dependant;
 import com.example.BurialSchemeRestApi.models.Member;
 import com.example.BurialSchemeRestApi.models.Relationship;
+import com.example.BurialSchemeRestApi.repositories.AuditRepo;
 import com.example.BurialSchemeRestApi.repositories.DependantRepo;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 import com.example.BurialSchemeRestApi.repositories.RelationshipRepo;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,11 +27,13 @@ public class DependantService {
     MemberRepo memberRepo;
     DependantRepo dependantRepo;
     RelationshipRepo relationshipRepo;
+    AuditRepo auditRepo;
 
-    public DependantService(MemberRepo memberRepo, DependantRepo dependantRepo, RelationshipRepo relationshipRepo) {
+    public DependantService(MemberRepo memberRepo, DependantRepo dependantRepo, RelationshipRepo relationshipRepo, AuditRepo auditRepo) {
         this.memberRepo = memberRepo;
         this.dependantRepo = dependantRepo;
         this.relationshipRepo = relationshipRepo;
+        this.auditRepo = auditRepo;
     }
 
     public ResponseMessageList allMembers() {
@@ -59,14 +64,15 @@ public class DependantService {
             try{
                 Relationship r = relationshipRepo.findById(dependantRequestDTO.getRelationship()).orElseThrow();
 
-                Dependant dependant = new Dependant();
-                dependant.setRelationship(r);
-                dependant.setMember(m);
-                dependant.setDOB(dependantRequestDTO.getDOB());
-                dependant.setChild(dependantRequestDTO.isChild());
-                dependant.setIDNumber(dependantRequestDTO.getIDNumber());
-                dependant.setName(dependantRequestDTO.getName());
-                dependant.setSurname(dependantRequestDTO.getSurname());
+                Dependant dependant = Dependant.builder()
+                        .relationship(r)
+                        .member(m)
+                        .DOB(dependantRequestDTO.getDOB())
+                        .child(dependantRequestDTO.isChild())
+                        .IDNumber(dependantRequestDTO.getIDNumber())
+                        .name(dependantRequestDTO.getName())
+                        .surname(dependantRequestDTO.getSurname())
+                        .build();
 
                 List<Dependant> dependants = dependantRepo.findAll();
 
@@ -84,7 +90,11 @@ public class DependantService {
                     }
                 }     
                 dependantRepo.save(dependant);
-
+                auditRepo.save(Audit.builder()
+                        .other(true).info("User added dep")
+                        .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                        .dependant(dependant.toString())
+                        .build());
                 return ResponseMessageObject.builder().data(dependant).message(ResponseStatus.SUCCESS.name()).build();
 
 
@@ -123,6 +133,11 @@ public class DependantService {
         try {
             Dependant dep = dependantRepo.findById(id).orElseThrow();
             dependantRepo.deleteById(dep.getID());
+            auditRepo.save(Audit.builder()
+                    .other(true).info("User deleted dep")
+                    .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                    .dependant(dep.toString())
+                    .build());
             return ResponseMessageList.builder().message(ResponseStatus.SUCCESS.name()).build();
 
         }catch(NoSuchElementException e) {
@@ -152,6 +167,13 @@ public class DependantService {
                 try{
                     if(dependantRequestDTO.getRelationship() != 0)
                         updateDep.setRelationship(relationshipRepo.findById(dependantRequestDTO.getRelationship()).orElseThrow());
+
+                    auditRepo.save(Audit.builder()
+                            .other(true).info("User added dep")
+                            .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                            .beforeValue(dependantRequestDTO.toString())
+                            .afterValue(updateDep.toString())
+                            .build());
 
                     return ResponseMessageObject.builder().data(dependantRepo.save(updateDep)).message(ResponseStatus.SUCCESS.name()).build();
 

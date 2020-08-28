@@ -6,15 +6,11 @@ import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
 import com.example.BurialSchemeRestApi.dto.ClaimRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
-import com.example.BurialSchemeRestApi.models.Claim;
-import com.example.BurialSchemeRestApi.models.Dependant;
-import com.example.BurialSchemeRestApi.models.Member;
-import com.example.BurialSchemeRestApi.models.TransactionType;
+import com.example.BurialSchemeRestApi.models.*;
 import com.example.BurialSchemeRestApi.repositories.*;
 import com.example.BurialSchemeRestApi.util.UtilClass;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -32,15 +28,16 @@ public class ClaimService {
     PremiumRepo premiumRepo;
     TransactionTypeRepo transactionTypeRepo;
     UtilClass util;
+    AuditRepo auditRepo;
 
-    public ClaimService(MemberRepo memberRepo, DependantRepo dependantRepo, ClaimRepo claimRepo, PremiumRepo premiumRepo,
-                        TransactionTypeRepo transactionTypeRepo, UtilClass util){
+    public ClaimService(MemberRepo memberRepo, DependantRepo dependantRepo, ClaimRepo claimRepo, PremiumRepo premiumRepo, TransactionTypeRepo transactionTypeRepo, UtilClass util, AuditRepo auditRepo) {
         this.memberRepo = memberRepo;
         this.dependantRepo = dependantRepo;
         this.claimRepo = claimRepo;
         this.premiumRepo = premiumRepo;
         this.transactionTypeRepo = transactionTypeRepo;
         this.util = util;
+        this.auditRepo = auditRepo;
     }
 
     public ResponseMessageList allClaims() {
@@ -53,6 +50,12 @@ public class ClaimService {
             Member member =memberRepo.findById(claimRequestDTO.getID()).orElseThrow();
 
             if(member.isClaimed()){
+                auditRepo.save(Audit.builder()
+                        .claim(true).info("User tried to claim for claimant that already claimed")
+                        .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                        .member(member.toString())
+                        .build());
+
                 throw new ValidationException("Cannot claim more than once");
             }else{
 
@@ -64,15 +67,31 @@ public class ClaimService {
                     BigDecimal total = util.getBalanceAtDate(member, new Date(System.currentTimeMillis())).setScale(2, RoundingMode.HALF_EVEN);
 
                     if(total.compareTo(BigDecimal.ZERO) == 0){
+                        auditRepo.save(Audit.builder()
+                                .claim(true).info("User tried to claim for claimant with no claims")
+                                .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                                .member(member.toString())
+                                .build());
+
                         throw new ValidationException("No funds");
                     }
 
                     if(total.compareTo(BigDecimal.ZERO) < 0){
                         log.error("member " + member.getID()+ " has negative balance");
+                        auditRepo.save(Audit.builder()
+                                .claim(true).info("User tried to claim for claimant that already claimed")
+                                .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                                .member(member.toString())
+                                .build());
                         throw new ValidationException("Negative Balance");
                     }
 
                     if(claimRequestDTO.getAmount().compareTo(total) > 0){
+                        auditRepo.save(Audit.builder()
+                                .claim(true).info("User tried to claim more than claimants premiums")
+                                .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                                .member(member.toString())
+                                .build());
                         throw new ValidationException("Cannot claim more than total premiums paid");
                     }
 
@@ -88,7 +107,15 @@ public class ClaimService {
                         member.setClaimed(true);
                         memberRepo.save(member);
 
-                        return ResponseMessageObject.builder().info("This is the last claim possible so all funds are paid out").
+                        auditRepo.save(Audit.builder()
+                                .claim(true)
+                                .info("Final claimant gets total: R"+total + " despite only needing R" + claimRequestDTO.getAmount())
+                                .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                                .member(member.toString())
+                                .build());
+
+                        return ResponseMessageObject.builder()
+                                .info("This is the last claim possible so all funds are paid out: R"+total).
                                 message(ResponseStatus.SUCCESS.name()).data(claimRepo.save(claim)).build();
                     }
 
@@ -146,6 +173,11 @@ public class ClaimService {
                     BigDecimal total = util.getBalanceAtDate(member, new Date(System.currentTimeMillis())).setScale(2, RoundingMode.HALF_EVEN);
 
                     if(claimRequestDTO.getAmount().compareTo(total) > 0){
+                        auditRepo.save(Audit.builder()
+                                .claim(true).info("User tried to claim for than claimants premiums")
+                                .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                                .dependant(dep.toString())
+                                .build());
                         throw new ValidationException("Cannot claim more than total premiums paid");
                     }
 
@@ -160,6 +192,14 @@ public class ClaimService {
 
                         dep.setClaimed(true);
                         dependantRepo.save(dep);
+
+                        auditRepo.save(Audit.builder()
+                                .claim(true)
+                                .info("Final claimant gets total: R"+total + " despite only needing R" + claimRequestDTO.getAmount())
+                                .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                                .dependant(dep.toString())
+                                .build());
+
                         return ResponseMessageObject.builder().message(ResponseStatus.SUCCESS.name()).data(claimRepo.save(claim)).
                                 info("This is the last claim possible so all funds are paid out").build();
                     }

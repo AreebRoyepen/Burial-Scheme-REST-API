@@ -3,8 +3,6 @@ package com.example.BurialSchemeRestApi.services;
 import com.example.BurialSchemeRestApi.api.ResponseMessageList;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.repositories.RelationshipRepo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service

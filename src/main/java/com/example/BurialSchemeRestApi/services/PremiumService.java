@@ -12,8 +12,6 @@ import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 import com.example.BurialSchemeRestApi.repositories.PremiumRepo;
 import com.example.BurialSchemeRestApi.repositories.TransactionTypeRepo;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.NoSuchElementException;
 

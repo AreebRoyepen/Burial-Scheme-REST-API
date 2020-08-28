@@ -50,10 +50,19 @@ public class ReportGenerator {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(stream, "UTF-8"));
 
-        //todo add header
+        StringBuffer oneLine = new StringBuffer();
+        oneLine.append("Burial Place");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Burial Date");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Claim Date");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Death Date");
+        bw.write(oneLine.toString());
+        bw.newLine();
+
         for (Claim claim : claims){
 
-            StringBuffer oneLine = new StringBuffer();
             oneLine.append(claim.getBurialPlace());
             oneLine.append(CSV_SEPARATOR);
             oneLine.append(claim.getBuriedDate());
@@ -67,7 +76,6 @@ public class ReportGenerator {
         bw.flush();
         bw.close();
 
-        // To convert it to a byte[] - simply use
         final byte[] bytes = stream.toByteArray();
 
         return bytes;
@@ -79,10 +87,30 @@ public class ReportGenerator {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(stream, "UTF-8"));
 
-        //todo add header
+        StringBuffer oneLine = new StringBuffer();
+        oneLine.append("Name");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Surname");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("DOB");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("DOE");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Address");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Area");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Cell");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Home");
+        oneLine.append(CSV_SEPARATOR);
+        oneLine.append("Work");
+        oneLine.append(CSV_SEPARATOR);
+        bw.write(oneLine.toString());
+        bw.newLine();
+
         for (Member member : members){
 
-            StringBuffer oneLine = new StringBuffer();
             oneLine.append(member.getName());
             oneLine.append(CSV_SEPARATOR);
             oneLine.append(member.getSurname());
@@ -107,7 +135,6 @@ public class ReportGenerator {
         bw.flush();
         bw.close();
 
-        // To convert it to a byte[] - simply use
         final byte[] bytes = stream.toByteArray();
 
         return bytes;

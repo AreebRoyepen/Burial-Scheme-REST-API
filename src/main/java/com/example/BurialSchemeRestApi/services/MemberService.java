@@ -6,12 +6,13 @@ import com.example.BurialSchemeRestApi.api.ResponseMessageObject;
 import com.example.BurialSchemeRestApi.dto.MemberRequestDTO;
 import com.example.BurialSchemeRestApi.enums.ResponseStatus;
 import com.example.BurialSchemeRestApi.exception.ValidationException;
+import com.example.BurialSchemeRestApi.models.Audit;
 import com.example.BurialSchemeRestApi.models.Member;
+import com.example.BurialSchemeRestApi.repositories.AuditRepo;
 import com.example.BurialSchemeRestApi.repositories.DependantRepo;
 import com.example.BurialSchemeRestApi.repositories.MemberRepo;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,10 +23,12 @@ public class MemberService {
 
     MemberRepo memberRepo;
     DependantRepo dependantRepo;
+    AuditRepo auditRepo;
 
-    public MemberService(MemberRepo memberRepo, DependantRepo dependantRepo) {
+    public MemberService(MemberRepo memberRepo, DependantRepo dependantRepo, AuditRepo auditRepo) {
         this.memberRepo = memberRepo;
         this.dependantRepo = dependantRepo;
+        this.auditRepo = auditRepo;
     }
 
     public ResponseMessageList allMembers() {
@@ -71,6 +74,11 @@ public class MemberService {
                 .area(m.getArea()).postalCode(m.getPostalCode()).cellNumber(m.getCellNumber()).homeNumber(m.getHomeNumber())
                 .workNumber(m.getWorkNumber()).email(m.getEmail()).DOB(m.getDOB()).DOE(m.getDOE()).paidJoiningFee(m.isPaidJoiningFee()).build();
         memberRepo.save(member);
+        auditRepo.save(Audit.builder()
+                .other(true).info("User added member")
+                .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                .member(member.toString())
+                .build());
         return ResponseMessageObject.builder().message(ResponseStatus.SUCCESS.name()).build();
 
     }
@@ -90,7 +98,13 @@ public class MemberService {
 
     public Message deleteMember(Long id) throws ValidationException {
         try {
+            Member m = memberRepo.findById(id).orElseThrow();
             memberRepo.deleteById(id);
+            auditRepo.save(Audit.builder()
+                    .other(true).info("User deleted member")
+                    .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                    .member(m.toString())
+                    .build());
             return ResponseMessageList.builder().message(ResponseStatus.SUCCESS.name()).build();
 
         }catch(NoSuchElementException e) {
@@ -119,6 +133,12 @@ public class MemberService {
             if(p.getDOB() != null) member.setDOB(p.getDOB());
             member.setPaidJoiningFee(p.isPaidJoiningFee());
 
+            auditRepo.save(Audit.builder()
+                    .other(true).info("User edited member")
+                    .username(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString())
+                    .beforeValue(p.toString())
+                    .afterValue(member.toString())
+                    .build());
             return ResponseMessageObject.builder().data(memberRepo.save(member)).message(ResponseStatus.SUCCESS.name()).build();
 
         }catch(NoSuchElementException e) {

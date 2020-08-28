@@ -10,8 +10,6 @@ import com.example.BurialSchemeRestApi.models.TransactionType;
 import com.example.BurialSchemeRestApi.repositories.IncomeRepo;
 import com.example.BurialSchemeRestApi.repositories.TransactionTypeRepo;
 import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,11 +28,11 @@ public class IncomeService {
         this.transactionTypeRepo = transactionTypeRepo;
     }
 
-    public Message allExpenses() {
+    public Message allIncomes() {
         return ResponseMessageList.builder().data(incomeRepo.findAll()).message(ResponseStatus.SUCCESS.name()).build();
     }
 
-    public Message addExpense(BigDecimal amount, Long type) throws ValidationException {
+    public Message addIncome(BigDecimal amount, Long type) throws ValidationException {
 
         try{
 
